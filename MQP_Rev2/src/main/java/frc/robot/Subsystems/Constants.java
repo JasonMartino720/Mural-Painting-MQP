@@ -7,29 +7,34 @@
 
 package frc.robot.Subsystems;
 
+import static edu.wpi.first.wpilibj.SerialPort.Port.kMXP;
+
+import edu.wpi.first.wpilibj.SerialPort;
 
 //TODO: Fill in these ports when known
 public class Constants {
 
-//----X-Traversal--------------------------------------------------------------
-    //SRX ID
+    // ----X-Traversal--------------------------------------------------------------
+    // SRX ID
     public static final int k_XTraversalPort = 00;
-    //X Encoder DIO Pins
+    // X Encoder DIO Pins
     public static final int k_EncXPort1 = 4;
     public static final int k_EncXPort2 = 5;
-        //Encoder conversion factor in inches per pulse
-        public static final double k_EncXConversion = 1; 
-        //Encoder min rate in X direction
-        public static final double k_EncXMinRate = 0.125; 
-        //Encoder is reversed or not
-        public static final boolean k_EncXReverse = false;
-//----Y-Traversal--------------------------------------------------------------
+    // Encoder conversion factor in inches per pulse
+    public static final double k_EncXConversion = 1;
+    // Encoder min rate in X direction
+    public static final double k_EncXMinRate = 0.125;
+    // Encoder is reversed or not
+    public static final boolean k_EncXReverse = false;
+    // ----Y-Traversal--------------------------------------------------------------
     public static final int k_YTraversalPort = 00;
+    // Y ToF Sensor
+    public static final SerialPort.Port k_YToFSerialPort = kMXP;
     //Y Encoder DIO Pins
     public static final int k_EncYPort1 = 2;
     public static final int k_EncYPort2 = 3;
         //Encoder conversion factor in inches per pulse
-        public static final double k_EncYConversion = 1; 
+        public static final double k_EncYConversion = 1.0/497.0; 
         //Encoder min rate in X direction
         public static final double k_EncYMinRate = 0.125; 
         //Encoder is reversed or not

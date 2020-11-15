@@ -49,6 +49,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     System.out.println("Y Encoder Distance " + yTrav.getEncPosition());
     System.out.println("X Encoder Distance " + xTrav.getEncPosition());
+    System.out.println("Y ToF Distance " + yTrav.getToFPosition());
   }
 
   @Override

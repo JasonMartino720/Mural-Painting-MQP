@@ -16,6 +16,7 @@ import com.ctre.phoenix.motorcontrol.*;
 public class Y_Traversal extends SubsystemBase {
   private final Encoder EncY = new Encoder(Constants.k_EncYPort1, Constants.k_EncYPort1);
   private final TalonSRX m_Y = new TalonSRX(Constants.k_YTraversalPort);
+  private final LidarProxy Y_ToF = new LidarProxy(Constants.k_YToFSerialPort);
   /**
    * Creates a new X_Traversal.
    */
@@ -37,6 +38,10 @@ public class Y_Traversal extends SubsystemBase {
 
   public double getEncPosition() {
     return this.EncY.getDistance();
+  }
+
+  public double getToFPosition(){
+    return Y_ToF.get();
   }
 
 
