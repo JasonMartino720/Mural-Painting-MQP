@@ -58,7 +58,7 @@ public class Robot extends TimedRobot {
       //yTrav.setSpeed(0.25);
     }
 
-    if(btn.get())
+    if(!btn.get())
     {
       yTrav.resetEnc();
       xTrav.resetEnc();
