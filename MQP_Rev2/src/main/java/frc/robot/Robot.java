@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.Subsystems.*;
 
@@ -22,6 +23,7 @@ public class Robot extends TimedRobot {
   private final X_Traversal xTrav = new X_Traversal();
   private final Y_Traversal yTrav = new Y_Traversal();
   private final Brush brush = new Brush();
+  private final DigitalInput btn = new DigitalInput(Constants.k_VexBtnPort);
   @Override
   public void robotInit() {
     brush.init();
@@ -50,6 +52,17 @@ public class Robot extends TimedRobot {
     System.out.println("Y Encoder Distance " + yTrav.getEncPosition());
     System.out.println("X Encoder Distance " + xTrav.getEncPosition());
     System.out.println("Y ToF Distance " + yTrav.getToFPosition());
+
+    if(yTrav.getEncPosition() < 5.0)
+    {
+      //yTrav.setSpeed(0.25);
+    }
+
+    if(btn.get())
+    {
+      yTrav.resetEnc();
+      xTrav.resetEnc();
+    }
   }
 
   @Override

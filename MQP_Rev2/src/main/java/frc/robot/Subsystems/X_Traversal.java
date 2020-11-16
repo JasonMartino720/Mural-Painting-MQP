@@ -35,6 +35,14 @@ public class X_Traversal extends SubsystemBase {
 
   }
 
+  public void setSpeed(double speed){
+    m_X.set(ControlMode.PercentOutput, speed);
+  }
+
+  public void resetEnc(){
+    EncX.reset();
+  }
+
   public double getEncPosition() {
     return this.EncX.getDistance();
   }

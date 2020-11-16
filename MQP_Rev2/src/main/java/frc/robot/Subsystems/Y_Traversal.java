@@ -33,11 +33,18 @@ public class Y_Traversal extends SubsystemBase {
   
   public void setPositionClosedLoopSetpoint(double setpoint){
     m_Y.set(ControlMode.Position, setpoint);
+  }
 
+  public void setSpeed(double speed){
+    m_Y.set(ControlMode.PercentOutput, speed);
   }
 
   public double getEncPosition() {
     return this.EncY.getDistance();
+  }
+
+  public void resetEnc(){
+    EncY.reset();
   }
 
   public double getToFPosition(){

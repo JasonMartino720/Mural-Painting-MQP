@@ -57,6 +57,10 @@ public class Constants {
         //Time to paint for
         public static final double k_PaintingTime = 0.25; //In Seconds
 
+//----VEX BUTTON---------------------------------------------------------------------
+    //Button DIO Port
+    public static final int k_VexBtnPort = 0;
+
     
 
 }
