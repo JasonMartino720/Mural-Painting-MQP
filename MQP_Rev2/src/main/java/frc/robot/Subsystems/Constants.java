@@ -42,9 +42,9 @@ public class Constants {
 
 //----PAINT SELECTOR--------------------------------------------------------------
     //Constant int for Spark Channel
-    public static final int k_PaintSelectorPort = 00;
+    public static final int k_PaintSelectorPort = 8;
         //Port for accompanying limit switch
-        public static final int k_PaintSelectorLimitPort = 00;
+        public static final int k_PaintSelectorLimitPort = 9;
         //Speeds for single turn method
         public static final double SELECTOR_CW_SPEED = 0.5;
         public static final double SELECTOR_CCW_SPEED = -0.5;
