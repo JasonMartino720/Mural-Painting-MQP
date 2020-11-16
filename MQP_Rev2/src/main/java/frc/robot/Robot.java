@@ -53,9 +53,11 @@ public class Robot extends TimedRobot {
     System.out.println("X Encoder Distance " + xTrav.getEncPosition());
     System.out.println("Y ToF Distance " + yTrav.getToFPosition());
 
-    if(yTrav.getEncPosition() < 5.0)
-    {
+    if(yTrav.getEncPosition() < 5.0){
       //yTrav.setSpeed(0.25);
+    }
+    else{
+      System.out.println("Has reached 5 inches");
     }
 
     if(!btn.get())
