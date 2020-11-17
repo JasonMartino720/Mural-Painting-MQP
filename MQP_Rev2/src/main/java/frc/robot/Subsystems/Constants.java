@@ -34,7 +34,7 @@ public class Constants {
     public static final int k_EncYPort1 = 2;
     public static final int k_EncYPort2 = 3;
         //Encoder conversion factor in inches per pulse
-        public static final double k_EncYConversion = 12 / 116598;
+        public static final float k_EncYConversion = 0.00010256f; 
         //Encoder min rate in X direction
         public static final double k_EncYMinRate = 0.125; 
         //Encoder is reversed or not
