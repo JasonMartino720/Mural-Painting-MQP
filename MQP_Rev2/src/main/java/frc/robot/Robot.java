@@ -57,6 +57,7 @@ public class Robot extends TimedRobot {
       yTrav.setSpeed(1.0);
     }
     else{
+      yTrav.setSpeed(0.0);
       System.out.println("Has reached 5 inches");
     }
 
