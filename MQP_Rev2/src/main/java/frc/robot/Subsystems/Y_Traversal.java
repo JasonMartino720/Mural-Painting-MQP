@@ -23,7 +23,7 @@ public class Y_Traversal extends SubsystemBase {
   public Y_Traversal() {
     m_Y.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
     EncY.setDistancePerPulse(Constants.k_EncYConversion);
-    EncY.setMinRate(Constants.k_EncYMinRate);
+    //EncY.setMinRate(Constants.k_EncYMinRate);
     EncY.setReverseDirection(Constants.k_EncYReverse);
   }
 
@@ -40,7 +40,8 @@ public class Y_Traversal extends SubsystemBase {
   }
 
   public double getEncPosition() {
-    return this.EncY.getDistance();
+    //return this.EncY.getDistance();
+    return this.EncY.get(); 
   }
 
   public void resetEnc(){
