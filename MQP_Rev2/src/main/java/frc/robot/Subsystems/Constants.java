@@ -16,7 +16,7 @@ public class Constants {
 
     // ----X-Traversal--------------------------------------------------------------
     // SRX ID
-    public static final int k_XTraversalPort = 00;
+    public static final int k_XTraversalPort = 0;
     // X Encoder DIO Pins
     public static final int k_EncXPort1 = 4;
     public static final int k_EncXPort2 = 5;
@@ -27,7 +27,7 @@ public class Constants {
     // Encoder is reversed or not
     public static final boolean k_EncXReverse = false;
     // ----Y-Traversal--------------------------------------------------------------
-    public static final int k_YTraversalPort = 00;
+    public static final int k_YTraversalPort = 1;
     // Y ToF Sensor
     public static final SerialPort.Port k_YToFSerialPort = kMXP;
     //Y Encoder DIO Pins
