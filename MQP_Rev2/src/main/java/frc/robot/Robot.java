@@ -54,7 +54,7 @@ public class Robot extends TimedRobot {
     System.out.println("Y ToF Distance " + yTrav.getToFPosition());
 
     if(yTrav.getEncPosition() < 5.0){
-      //yTrav.setSpeed(0.25);
+      yTrav.setSpeed(0.25);
     }
     else{
       System.out.println("Has reached 5 inches");
