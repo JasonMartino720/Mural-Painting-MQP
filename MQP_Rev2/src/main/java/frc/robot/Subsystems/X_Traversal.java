@@ -44,7 +44,7 @@ public class X_Traversal extends SubsystemBase {
   }
 
   public double getEncPosition() {
-    return this.EncX.getRaw();
+    return this.EncX.getDistance();
   }
 
 }

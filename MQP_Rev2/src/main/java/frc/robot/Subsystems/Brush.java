@@ -57,7 +57,7 @@ public class Brush extends SubsystemBase {
 
   // Checks Limit Switch to see if Geneva Mechanism is aligned
   public boolean getSelectorSwitch() {
-    return paintSelctorLimit.get();
+    return !paintSelctorLimit.get();
   }
 
   public void paintForTime() {

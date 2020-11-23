@@ -63,9 +63,9 @@ public class Robot extends TimedRobot {
     //   System.out.println("Has reached 1.5 inches");
     // }
 
-    // if(xTrav.getEncPosition() > 1.5){
-    //   xTrav.setSpeed(0.5);
-    // }
+    if(xTrav.getEncPosition() > 12){
+      xTrav.setSpeed(0.5);
+    }
 
     if(!btn.get())
     {
