@@ -42,18 +42,18 @@ public class Constants {
 
 //----PAINT SELECTOR--------------------------------------------------------------
     //Constant int for Spark Channel
-    public static final int k_PaintSelectorPort = 8;
+    public static final int k_PaintSelectorPort = 1;
         //Port for accompanying limit switch
-        public static final int k_PaintSelectorLimitPort = 9;
+        public static final int k_PaintSelectorLimitPort = 1;
         //Speeds for single turn method
         public static final double SELECTOR_CW_SPEED = 0.5;
         public static final double SELECTOR_CCW_SPEED = -0.5;
 
     //Constant int for VexMotor Channel
     //  Controls Paint Trigger
-    public static final int k_PaintTriggerPort = 00;
+    public static final int k_PaintTriggerPort = 0;
         //Speed for painting 
-        public static final double k_PaintTriggerSpeed = 0.5;
+        public static final double k_PaintTriggerSpeed = 1.0;
         //Time to paint for
         public static final double k_PaintingTime = 0.25; //In Seconds
 

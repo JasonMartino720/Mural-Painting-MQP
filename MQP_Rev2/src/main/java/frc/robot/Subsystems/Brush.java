@@ -26,7 +26,7 @@ public class Brush extends SubsystemBase {
 
   }
 
-  private int currentColor;
+  public int currentColor;
   private double paintStartTime, lastTime;
   private boolean isDoneSelecting, countUp;
 
@@ -56,7 +56,7 @@ public class Brush extends SubsystemBase {
   }
 
   // Checks Limit Switch to see if Geneva Mechanism is aligned
-  public boolean paintSelectorSwitch() {
+  public boolean getSelectorSwitch() {
     return paintSelctorLimit.get();
   }
 
@@ -116,7 +116,7 @@ public class Brush extends SubsystemBase {
     //Waits for Paint Selector limit switch to be pressed,
     //turns off motor, and sets state to update.
     case WAIT_FOR_COLOR:
-      if(this.paintSelectorSwitch())
+      if(this.getSelectorSwitch())
       {
         this.spinSelectorOff();
         brushState = BrushState.UPDATE;
