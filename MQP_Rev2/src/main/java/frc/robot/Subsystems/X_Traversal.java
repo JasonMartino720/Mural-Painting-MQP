@@ -15,7 +15,7 @@ import com.ctre.phoenix.motorcontrol.can.*;
 
 public class X_Traversal extends SubsystemBase {
   private final Encoder EncX = new Encoder(Constants.k_EncXPort1, Constants.k_EncXPort2);
-  private final TalonSRX m_X = new TalonSRX(Constants.k_YTraversalPort);
+  private final TalonSRX m_X = new TalonSRX(Constants.k_XTraversalPort);
   /**
    * Creates a new X_Traversal.
    */
