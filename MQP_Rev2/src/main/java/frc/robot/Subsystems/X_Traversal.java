@@ -22,7 +22,7 @@ public class X_Traversal extends SubsystemBase {
   public X_Traversal() {
     m_X.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
     EncX.setDistancePerPulse(Constants.k_EncXConversion);
-    EncX.setMinRate(Constants.k_EncXMinRate);
+    // EncX.setMinRate(Constants.k_EncXMinRate);
     EncX.setReverseDirection(Constants.k_EncXReverse);
   }
 
