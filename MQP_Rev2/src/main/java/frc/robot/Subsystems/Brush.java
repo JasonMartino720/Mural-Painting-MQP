@@ -23,6 +23,7 @@ public class Brush extends SubsystemBase {
    * Creates a new Brush.
    */
   public Brush() {
+    brushState = BrushState.IDLE;
 
   }
 
