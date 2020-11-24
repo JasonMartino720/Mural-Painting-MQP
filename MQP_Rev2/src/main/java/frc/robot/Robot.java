@@ -58,21 +58,21 @@ public class Robot extends TimedRobot {
     System.out.println("Paint Selector Limit " + brush.getSelectorSwitch());
     // System.out.println("Current Color " + brush.currentColor);
 
-    // if(!brush.getSelectorSwitch()){
-    //   brush.spinSelectorCW();
-    // }
-    // else{
-    //   brush.spinSelectorOff();
-    //   System.out.println("Has reached 1.5 inches");
-    // }
+    if(!brush.getSelectorSwitch()){
+      brush.spinSelectorCW();
+    }
+    else{
+      brush.spinSelectorOff();
+      System.out.println("Has reached 1.5 inches");
+    }
     
-    if(timer.get() < 2.0){
-      xTrav.setSpeed(0.5);
-    }
-    else
-    {
-      xTrav.setSpeed(0.0);
-    }
+    // if(timer.get() < 2.0){
+    //   xTrav.setSpeed(0.5);
+    // }
+    // else
+    // {
+    //   xTrav.setSpeed(0.0);
+    // }
 
     if(!btn.get())
     {
