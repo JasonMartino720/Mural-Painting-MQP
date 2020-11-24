@@ -64,7 +64,7 @@ public class Robot extends TimedRobot {
 
     switch(this.statenum)
     {
-      //Move Down
+      // Move Down
       case 0:
         if(yTrav.getEncPosition() < 1.5){
           yTrav.setSpeed(-1);
@@ -75,7 +75,8 @@ public class Robot extends TimedRobot {
           timer.start();
         }
       break;
-
+      
+      // Paint
       case 1:
         if(timer.get() < 0.5){
           brush.paintForTime(1.0);
@@ -88,6 +89,7 @@ public class Robot extends TimedRobot {
         }
       break;
 
+      // Reverse Trigger
       case 2:
         if(timer.get() < 0.1){
           brush.paintForTime(-1.0);
@@ -104,7 +106,7 @@ public class Robot extends TimedRobot {
       yTrav.resetEnc();
       xTrav.resetEnc();
       timer.reset();
-
+      this.statenum = 0;
     }
   }
 
