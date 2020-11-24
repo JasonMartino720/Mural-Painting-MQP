@@ -10,6 +10,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.Subsystems.*;
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -24,6 +25,7 @@ public class Robot extends TimedRobot {
   private final Y_Traversal yTrav = new Y_Traversal();
   private final Brush brush = new Brush();
   private final DigitalInput btn = new DigitalInput(Constants.k_VexBtnPort);
+  private final Timer timer = new Timer();
   @Override
   public void robotInit() {
     brush.init();
@@ -62,9 +64,9 @@ public class Robot extends TimedRobot {
     //   brush.spinSelectorOff();
     //   System.out.println("Has reached 1.5 inches");
     // }
-
-    if(xTrav.getEncPosition() > -12){
-      xTrav.setSpeed(-.5);
+    
+    if(timer.get() < 2.0){
+      xTrav.setSpeed(0.5);
     }
     else
     {
@@ -75,6 +77,8 @@ public class Robot extends TimedRobot {
     {
       yTrav.resetEnc();
       xTrav.resetEnc();
+      timer.reset();
+      timer.start();
     }
   }
 
