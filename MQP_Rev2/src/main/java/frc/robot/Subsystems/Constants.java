@@ -25,7 +25,7 @@ public class Constants {
     // Encoder min rate in X direction
     public static final double k_EncXMinRate = 0.125;
     // Encoder is reversed or not
-    public static final boolean k_EncXReverse = false;
+    public static final boolean k_EncXReverse = true;
     // ----Y-Traversal--------------------------------------------------------------
     public static final int k_YTraversalPort = 1;
     // Y ToF Sensor
