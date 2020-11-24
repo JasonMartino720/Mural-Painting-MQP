@@ -61,8 +61,8 @@ public class Brush extends SubsystemBase {
     return !paintSelctorLimit.get();
   }
 
-  public void paintForTime() {
-    m_paintTrigger.set(Constants.k_PaintTriggerSpeed);
+  public void paintForTime(double speed) {
+    m_paintTrigger.set(speed);
   }
 
   public void stopPainting() {

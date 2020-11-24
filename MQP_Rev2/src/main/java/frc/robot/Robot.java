@@ -26,6 +26,9 @@ public class Robot extends TimedRobot {
   private final Brush brush = new Brush();
   private final DigitalInput btn = new DigitalInput(Constants.k_VexBtnPort);
   private final Timer timer = new Timer();
+
+  private int statenum = 0;
+
   @Override
   public void robotInit() {
     brush.init();
@@ -47,6 +50,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    statenum = 0;
     timer.start();
   }
 
@@ -58,14 +62,49 @@ public class Robot extends TimedRobot {
     System.out.println("Paint Selector Limit " + brush.getSelectorSwitch());
     System.out.println("Current Color " + brush.currentColor);
 
-    brush.update(Color.GREEN, false);
+    switch(this.statenum)
+    {
+      //Move Down
+      case 0:
+        if(yTrav.getEncPosition() < 1.5){
+          yTrav.setSpeed(0.35);
+        }
+        else{
+          yTrav.setSpeed(0.0);
+          this.statenum = 1;
+          timer.start();
+        }
+      break;
+
+      case 1:
+        if(timer.get() < 0.5){
+          brush.paintForTime(1.0);
+        }
+        else{
+          brush.stopPainting();
+          this.statenum = 2;
+          timer.reset();
+          timer.start();
+        }
+      break;
+
+      case 2:
+        if(timer.get() < 0.25){
+          brush.paintForTime(-1.0);
+        }
+        else{
+          brush.stopPainting();
+          timer.stop();
+        }
+      break;
+    }
     
     if(!btn.get())
     {
       yTrav.resetEnc();
       xTrav.resetEnc();
       timer.reset();
-      timer.start();
+
     }
   }
 
