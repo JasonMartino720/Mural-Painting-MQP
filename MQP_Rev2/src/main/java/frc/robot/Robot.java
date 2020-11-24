@@ -66,6 +66,10 @@ public class Robot extends TimedRobot {
     if(xTrav.getEncPosition() < 12){
       xTrav.setSpeed(0.5);
     }
+    else
+    {
+      xTrav.setSpeed(0.0);
+    }
 
     if(!btn.get())
     {
@@ -80,6 +84,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
+    xTrav.setSpeed(0.0);
+    yTrav.setSpeed(0.0);
+    brush.spinSelectorOff();
+    brush.stopPainting();
   }
 
   @Override
