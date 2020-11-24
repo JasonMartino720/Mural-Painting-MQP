@@ -94,7 +94,7 @@ public class Brush extends SubsystemBase {
     //Sets state to WAIT_FOR_PAINT when finished   
     case PAINTING:
       paintStartTime = brushTimer.get();
-      this.paintForTime();
+      // this.paintForTime();
       brushState = BrushState.WAIT_FOR_PAINT;
     break;
     
