@@ -56,24 +56,10 @@ public class Robot extends TimedRobot {
     System.out.println("X Encoder Distance " + xTrav.getEncPosition());
     // System.out.println("Y ToF Distance " + yTrav.getToFPosition());
     System.out.println("Paint Selector Limit " + brush.getSelectorSwitch());
-    // System.out.println("Current Color " + brush.currentColor);
+    System.out.println("Current Color " + brush.currentColor);
 
-    if(!brush.getSelectorSwitch()){
-      brush.spinSelectorCW();
-    }
-    else{
-      brush.spinSelectorOff();
-      System.out.println("Has reached 1.5 inches");
-    }
+    brush.update(Color.GREEN, false);
     
-    // if(timer.get() < 2.0){
-    //   xTrav.setSpeed(0.5);
-    // }
-    // else
-    // {
-    //   xTrav.setSpeed(0.0);
-    // }
-
     if(!btn.get())
     {
       yTrav.resetEnc();
