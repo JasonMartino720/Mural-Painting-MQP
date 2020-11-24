@@ -52,6 +52,8 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     statenum = 0;
     timer.start();
+    yTrav.resetEnc();
+    xTrav.resetEnc();
   }
 
   @Override
