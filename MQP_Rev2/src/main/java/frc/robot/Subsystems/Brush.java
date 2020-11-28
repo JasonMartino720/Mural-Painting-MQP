@@ -7,6 +7,8 @@
 
 package frc.robot.Subsystems;
 
+import javax.lang.model.util.ElementScanner6;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Talon;
@@ -83,7 +85,6 @@ public class Brush extends SubsystemBase {
         brushState = BrushState.PAINTING;
       }
       else if (color.colorVal != this.currentColor){
-        this.currentColor = color.colorVal;
         brushState = BrushState.SELECTING_COLOR;
       }    
       else
@@ -117,12 +118,29 @@ public class Brush extends SubsystemBase {
     //Waits for Paint Selector limit switch to be pressed,
     //turns off motor, and sets state to update.
     case WAIT_FOR_COLOR:
-      if(this.getSelectorSwitch() && this.currentColor == color.colorVal)
+      if(this.getSelectorSwitch())
       {
-        this.spinSelectorOff();
-        brushState = BrushState.UPDATE;
+        if(countUp && this.currentColor + 1 == color.colorVal)
+        {
+          this.spinSelectorOff();
+          brushState = BrushState.UPDATE;
+          this.isDoneSelecting = true;
+        }  
+        else if(!countUp && this.currentColor - 1 == color.colorVal)
+        {
+          this.spinSelectorOff();
+          brushState = BrushState.UPDATE;
+          this.isDoneSelecting = true;
+        }
+        else
+        {
+          brushState = BrushState.UPDATE;
+          this.isDoneSelecting = false;
+        }
       }
-      else if(this.getSelectorSwitc()
+      else{
+        brushState = BrushState.WAIT_FOR_COLOR;
+      }
 
     break;
 
@@ -146,6 +164,15 @@ public class Brush extends SubsystemBase {
         this.currentColor = 8;
       else
         this.currentColor -= 1;
+
+      if(this.isDoneSelecting)
+      {
+        brushState = BrushState.IDLE;
+      }
+      else 
+      {
+        brushState = BrushState.WAIT_FOR_COLOR;
+      }  
     break;
     }
   }
