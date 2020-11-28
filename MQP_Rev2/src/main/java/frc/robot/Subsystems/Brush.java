@@ -27,7 +27,7 @@ public class Brush extends SubsystemBase {
 
   }
 
-  public int currentColor;
+  public int currentColor, nextColor;
   private double paintStartTime, lastTime;
   private boolean isDoneSelecting, countUp;
 
@@ -117,11 +117,13 @@ public class Brush extends SubsystemBase {
     //Waits for Paint Selector limit switch to be pressed,
     //turns off motor, and sets state to update.
     case WAIT_FOR_COLOR:
-      if(this.getSelectorSwitch())
+      if(this.getSelectorSwitch() && this.currentColor == color.colorVal)
       {
         this.spinSelectorOff();
         brushState = BrushState.UPDATE;
       }
+      else if(this.getSelectorSwitc()
+
     break;
 
     //Waits designated amount of time for paint application to finish,
