@@ -25,8 +25,7 @@ public class Brush extends SubsystemBase {
    * Creates a new Brush.
    */
   public Brush() {
-    brushState = BrushState.IDLE;
-
+    brushState = BrushState.INIT;
   }
 
   public int currentColor, nextColor;
@@ -41,6 +40,7 @@ public class Brush extends SubsystemBase {
 
   public void init(){
     //Any initialization that may need to be repeated, ie. should not be called in constructor
+    
   }
 
   // Spin Paint Selector CW at Constant Speed
@@ -77,6 +77,7 @@ public class Brush extends SubsystemBase {
 
     case INIT:
       brushTimer.start();
+      this.currentColor = 1;
       brushState = BrushState.IDLE;
     break;
   
