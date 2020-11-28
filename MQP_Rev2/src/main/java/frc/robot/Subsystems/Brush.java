@@ -169,7 +169,7 @@ public class Brush extends SubsystemBase {
     case WAIT_FOR_PAINT:
       if(this.getTriggerBtn())
         this.stopPainting();
-        this.currentColor = Color.NONE.colorVal;
+        //TODO: this.currentColor = Color.NONE.colorVal;
         brushState = BrushState.IDLE;
     break;
 
