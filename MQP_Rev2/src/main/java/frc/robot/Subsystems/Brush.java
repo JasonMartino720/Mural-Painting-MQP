@@ -30,7 +30,7 @@ public class Brush extends SubsystemBase {
 
   public int currentColor, nextColor;
   private double paintStartTime, lastTime;
-  private boolean isDoneSelecting, countUp;
+  private boolean isDoneSelecting, countUp, lastSwitchState;
 
   private enum BrushState {
     INIT, IDLE, PAINTING, SELECTING_COLOR, WAIT_FOR_COLOR, WAIT_FOR_PAINT, UPDATE
@@ -116,31 +116,37 @@ public class Brush extends SubsystemBase {
       }
     break;
 
-    //Waits for Paint Selector limit switch to be pressed,
-    //turns off motor, and sets state to update.
+
+    //Waits for Paint Selector to reach desired color
     case WAIT_FOR_COLOR:
-      if(this.getSelectorSwitch())
-      {
-        if(countUp && this.currentColor + 1 == color.colorVal)
-        {
-          brushState = BrushState.UPDATE;
-          this.isDoneSelecting = true;
-        }  
-        else if(!countUp && this.currentColor - 1 == color.colorVal)
-        {
-          brushState = BrushState.UPDATE;
-          this.isDoneSelecting = true;
+      if(this.getSelectorSwitch() && !this.lastSwitchState){
+        //Positive
+        if(countUp){
+          if(this.currentColor + 1 > 8){
+            this.currentColor = 1;
+          }
+          else{
+            this.currentColor += 1;
+          }
         }
-        else
-        {
-          brushState = BrushState.UPDATE;
-          this.isDoneSelecting = false;
+        //Negative
+        else{
+          if(this.currentColor - 1 < 1){
+            this.currentColor = 8;
+          }
+          else{
+            this.currentColor -= 1;
+          }
         }
-      }
-      else{
-        brushState = BrushState.WAIT_FOR_COLOR;
+        System.out.println("Last Switch State " + this.lastSwitchState);
       }
 
+      if(this.currentColor == color.colorVal){
+        this.spinSelectorOff();
+        brushState = BrushState.IDLE;
+      }
+      
+      this.lastSwitchState = this.getSelectorSwitch();
     break;
 
     //Waits designated amount of time for paint application to finish,
@@ -166,6 +172,7 @@ public class Brush extends SubsystemBase {
 
       if(this.isDoneSelecting)
       {
+        this.spinSelectorOff();
         brushState = BrushState.IDLE;
       }
       else 
