@@ -72,7 +72,7 @@ public class Robot extends TimedRobot {
     }
     else
     {
-      xTrav.setSpeed(-0.5);
+      xTrav.setSpeed(0.0);
     }
 
     if(!btn.get())
