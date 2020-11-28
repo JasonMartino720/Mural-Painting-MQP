@@ -198,7 +198,7 @@ public class Brush extends SubsystemBase {
       {
         brushState = nextBrushState;
       }
-
+    break;  
     }
   }
 }
