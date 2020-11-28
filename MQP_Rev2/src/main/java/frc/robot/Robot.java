@@ -60,21 +60,21 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     // System.out.println("Y Encoder Distance " + yTrav.getEncPosition());
-    // System.out.println("X Encoder Distance " + xTrav.getEncPosition());
+    System.out.println("X Encoder Distance " + xTrav.getEncPosition());
     // System.out.println("Y ToF Distance " + yTrav.getToFPosition());
-     System.out.println("Paint Selector Limit " + brush.getSelectorSwitch());
-     System.out.println("Paint Trigger Button " + brush.getTriggerBtn());
-     System.out.println("Current Color " + brush.currentColor);
+    //  System.out.println("Paint Selector Limit " + brush.getSelectorSwitch());
+    //  System.out.println("Paint Trigger Button " + brush.getTriggerBtn());
+    //  System.out.println("Current Color " + brush.currentColor);
      
-    if(!Brush.finishedPainting)
+    if(timer.get() < 2)
     {
-      brush.update(Color.BLACK, true);
+      xTrav.setSpeed(0.5);
     }
     else
     {
-      brush.update(Color.BLACK, false);
+      xTrav.setSpeed(-0.5);
     }
-    
+
     if(!btn.get())
     {
       yTrav.resetEnc();

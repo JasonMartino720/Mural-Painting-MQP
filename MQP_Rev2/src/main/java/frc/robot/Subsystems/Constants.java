@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.SerialPort;
 //TODO: Fill in these ports when known
 public class Constants {
 
-    // ----X-Traversal--------------------------------------------------------------
+// ----X-Traversal--------------------------------------------------------------
     // SRX ID
     public static final int k_XTraversalPort = 0;
     // X Encoder DIO Pins
@@ -26,7 +26,14 @@ public class Constants {
     public static final double k_EncXMinRate = 0.125;
     // Encoder is reversed or not
     public static final boolean k_EncXReverse = true;
-    // ----Y-Traversal--------------------------------------------------------------
+
+    //PID Constants
+    public static final double k_xP = 0.0;
+    public static final double k_xI = 0.0;
+    public static final double k_xD = 0.0;
+    public static final double k_xF = 0.0;
+    
+// ----Y-Traversal--------------------------------------------------------------
     public static final int k_YTraversalPort = 1;
     // Y ToF Sensor
     public static final SerialPort.Port k_YToFSerialPort = kMXP;

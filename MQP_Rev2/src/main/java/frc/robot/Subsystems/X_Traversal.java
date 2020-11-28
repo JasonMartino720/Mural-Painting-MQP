@@ -8,6 +8,7 @@
 package frc.robot.Subsystems;
 
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -16,6 +17,7 @@ import com.ctre.phoenix.motorcontrol.can.*;
 public class X_Traversal extends SubsystemBase {
   private final Encoder EncX = new Encoder(Constants.k_EncXPort1, Constants.k_EncXPort2);
   private final TalonSRX m_X = new TalonSRX(Constants.k_XTraversalPort);
+  // private final PIDController PID_X = new PIDController(Constants.k_xP, Constants.k_xI, Constants.k_xD, Constants.k_xF, EncX, m_X);
   /**
    * Creates a new X_Traversal.
    */
