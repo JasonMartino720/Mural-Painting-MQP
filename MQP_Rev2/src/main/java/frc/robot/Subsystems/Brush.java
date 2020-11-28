@@ -30,11 +30,11 @@ public class Brush extends SubsystemBase {
   }
 
   public int currentColor, nextColor;
-  private double paintStartTime, lastTime;
+  private double paintStartTime, lastTime, resetStartTime;
   private boolean isDoneSelecting, countUp, lastSwitchState;
 
   private enum BrushState {
-    INIT, IDLE, PAINTING, SELECTING_COLOR, WAIT_FOR_COLOR, WAIT_FOR_PAINT, UPDATE
+    INIT, IDLE, PAINTING, SELECTING_COLOR, WAIT_FOR_COLOR, WAIT_FOR_PAINT, WAIT_FOR_RESET
   }
 
   private BrushState brushState, nextBrushState;
@@ -69,10 +69,13 @@ public class Brush extends SubsystemBase {
     return !paintTriggerBtn.get();
   }
 
-  public void paintForTime(double speed) {
-    m_paintTrigger.set(speed);
+  public void paintForTime() {
+    m_paintTrigger.set(Constants.k_PaintTriggerSpeed);
   }
 
+  public void triggerReset() {
+    m_paintTrigger.set(-Constants.k_PaintTriggerSpeed);
+  }
   public void stopPainting() {
     m_paintTrigger.set(0.0);
   }
@@ -96,13 +99,13 @@ public class Brush extends SubsystemBase {
       }    
       else
         brushState = BrushState.IDLE;
-        if(color.colorVal == this.currentColor){
-          System.out.println("Correct Color, Waiting for X/Y");
-        }
+        // if(color.colorVal == this.currentColor){
+        //   System.out.println("Correct Color, Waiting for X/Y");
+        // }
 
-        if(readyToPaint){
-          System.out.println("Correct Pos, Waiting for Selector");
-        }
+        // if(readyToPaint){
+        //   System.out.println("Correct Pos, Waiting for Selector");
+        // }
 
     break;
 
@@ -110,7 +113,7 @@ public class Brush extends SubsystemBase {
     //Sets state to WAIT_FOR_PAINT when finished   
     case PAINTING:
       paintStartTime = brushTimer.get();
-      // this.paintForTime();
+      this.paintForTime();
       brushState = BrushState.WAIT_FOR_PAINT;
     break;
     
@@ -167,33 +170,21 @@ public class Brush extends SubsystemBase {
     //stops paint trigger motor, and resets the active color to none.
     //Returns to IDLE when finished
     case WAIT_FOR_PAINT:
-      if(this.getTriggerBtn())
+      if(brushTimer.get() - paintStartTime >= Constants.k_PaintingTime)
+        resetStartTime = brushTimer.get();
+        this.triggerReset();
+        //TODO: this.currentColor = Color.NONE.colorVal;
+        brushState = BrushState.WAIT_FOR_RESET;
+    break;
+
+    case WAIT_FOR_RESET:
+      if(brushTimer.get() - resetStartTime >= Constants.k_ResetTime){
         this.stopPainting();
         //TODO: this.currentColor = Color.NONE.colorVal;
-        brushState = BrushState.IDLE;
-    break;
-
-    //Update keeps the currentColor variable updated as we cycle through colors approaching the goal
-    case UPDATE:
-      if(this.countUp && this.currentColor == 8)//Wrap 8 back to 1
-        this.currentColor = 1;
-      else if(this.countUp) 
-        this.currentColor += 1;
-      else if(!this.countUp && this.currentColor == 1)//Wrap 1 to 8 
-        this.currentColor = 8;
-      else
-        this.currentColor -= 1;
-
-      if(this.isDoneSelecting)
-      {
-        this.spinSelectorOff();
-        brushState = BrushState.IDLE;
+        brushState = BrushState.WAIT_FOR_RESET;
       }
-      else 
-      {
-        brushState = BrushState.WAIT_FOR_COLOR;
-      }  
     break;
+
     }
   }
 }
