@@ -40,7 +40,7 @@ public class Brush extends SubsystemBase {
 
   public void init(){
     //Any initialization that may need to be repeated, ie. should not be called in constructor
-    
+    brushState = BrushState.INIT;
   }
 
   // Spin Paint Selector CW at Constant Speed
