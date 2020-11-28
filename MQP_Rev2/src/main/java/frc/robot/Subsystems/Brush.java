@@ -123,13 +123,11 @@ public class Brush extends SubsystemBase {
       {
         if(countUp && this.currentColor + 1 == color.colorVal)
         {
-          this.spinSelectorOff();
           brushState = BrushState.UPDATE;
           this.isDoneSelecting = true;
         }  
         else if(!countUp && this.currentColor - 1 == color.colorVal)
         {
-          this.spinSelectorOff();
           brushState = BrushState.UPDATE;
           this.isDoneSelecting = true;
         }
