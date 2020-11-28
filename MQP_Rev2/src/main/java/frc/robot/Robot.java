@@ -75,13 +75,13 @@ public class Robot extends TimedRobot {
       xTrav.setSpeed(0.0);
     }
 
-    if(!btn.get())
-    {
-      yTrav.resetEnc();
-      xTrav.resetEnc();
-      timer.reset();
-      this.statenum = 0;
-    }
+    // if(!btn.get())
+    // {
+    //   yTrav.resetEnc();
+    //   xTrav.resetEnc();
+    //   timer.reset();
+    //   this.statenum = 0;
+    // }
   }
 
   @Override
