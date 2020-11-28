@@ -64,7 +64,7 @@ public class Robot extends TimedRobot {
      System.out.println("Paint Selector Limit " + brush.getSelectorSwitch());
      System.out.println("Current Color " + brush.currentColor);
 
-    brush.update(Color.RED, false);
+    brush.update(Color.BLACK, false);
     
     if(!btn.get())
     {
