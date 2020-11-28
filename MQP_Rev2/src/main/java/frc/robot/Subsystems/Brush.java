@@ -173,7 +173,6 @@ public class Brush extends SubsystemBase {
     case WAIT_FOR_PAINT:
       System.out.println("WAITING FOR PAINTING TO FINISH");
       if(brushTimer.get() - paintStartTime >= Constants.k_PaintingTime){ 
-        resetStartTime = brushTimer.get();
         this.triggerReset();
         //TODO: this.currentColor = Color.NONE.colorVal;
         brushState = BrushState.WAIT_FOR_RESET;
@@ -182,10 +181,10 @@ public class Brush extends SubsystemBase {
 
     case WAIT_FOR_RESET:
       System.out.println("WAITING FOR RESET TO FINISH");
-      if(brushTimer.get() - resetStartTime >= Constants.k_ResetTime){
+      if(getTriggerBtn()){
         this.stopPainting();
         //TODO: this.currentColor = Color.NONE.colorVal;
-        brushState = BrushState.WAIT_FOR_RESET;
+        brushState = BrushState.IDLE;
       }
     break;
 
