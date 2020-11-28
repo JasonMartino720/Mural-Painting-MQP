@@ -32,6 +32,7 @@ public class Brush extends SubsystemBase {
   public int currentColor, nextColor;
   private double paintStartTime, lastTime, resetStartTime;
   private boolean isDoneSelecting, countUp, lastSwitchState;
+  public static boolean finishedPainting = false;
 
   private enum BrushState {
     INIT, IDLE, PAINTING, SELECTING_COLOR, WAIT_FOR_COLOR, WAIT_FOR_PAINT, WAIT_FOR_RESET
@@ -185,6 +186,7 @@ public class Brush extends SubsystemBase {
         this.stopPainting();
         //TODO: this.currentColor = Color.NONE.colorVal;
         brushState = BrushState.IDLE;
+        this.finishedPainting = true;
       }
     break;
 

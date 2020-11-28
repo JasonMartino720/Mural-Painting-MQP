@@ -66,9 +66,14 @@ public class Robot extends TimedRobot {
      System.out.println("Paint Trigger Button " + brush.getTriggerBtn());
      System.out.println("Current Color " + brush.currentColor);
      
-
-    
-    brush.update(Color.BLACK, true);
+    if(!Brush.finishedPainting)
+    {
+      brush.update(Color.BLACK, true);
+    }
+    else
+    {
+      brush.update(Color.BLACK, false);
+    }
     
     if(!btn.get())
     {
