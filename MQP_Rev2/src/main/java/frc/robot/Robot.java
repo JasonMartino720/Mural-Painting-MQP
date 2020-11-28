@@ -51,6 +51,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     statenum = 0;
+    brush.init();
     timer.start();
     yTrav.resetEnc();
     xTrav.resetEnc();
@@ -85,6 +86,7 @@ public class Robot extends TimedRobot {
     yTrav.setSpeed(0.0);
     brush.spinSelectorOff();
     brush.stopPainting();
+    
   }
 
   @Override

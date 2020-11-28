@@ -40,7 +40,7 @@ public class Brush extends SubsystemBase {
 
   public void init(){
     //Any initialization that may need to be repeated, ie. should not be called in constructor
-    
+    brushState = BrushState.INIT;
   }
 
   // Spin Paint Selector CW at Constant Speed
@@ -123,13 +123,11 @@ public class Brush extends SubsystemBase {
       {
         if(countUp && this.currentColor + 1 == color.colorVal)
         {
-          this.spinSelectorOff();
           brushState = BrushState.UPDATE;
           this.isDoneSelecting = true;
         }  
         else if(!countUp && this.currentColor - 1 == color.colorVal)
         {
-          this.spinSelectorOff();
           brushState = BrushState.UPDATE;
           this.isDoneSelecting = true;
         }
@@ -168,6 +166,7 @@ public class Brush extends SubsystemBase {
 
       if(this.isDoneSelecting)
       {
+        this.spinSelectorOff();
         brushState = BrushState.IDLE;
       }
       else 
