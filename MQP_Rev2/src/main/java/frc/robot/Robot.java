@@ -63,9 +63,11 @@ public class Robot extends TimedRobot {
     // System.out.println("X Encoder Distance " + xTrav.getEncPosition());
     // System.out.println("Y ToF Distance " + yTrav.getToFPosition());
      System.out.println("Paint Selector Limit " + brush.getSelectorSwitch());
+     System.out.println("Paint Trigger Button " + brush.getTriggerBtn());
      System.out.println("Current Color " + brush.currentColor);
 
-    brush.update(Color.BLACK, false);
+    
+    brush.update(Color.BLACK, true);
     
     if(!btn.get())
     {

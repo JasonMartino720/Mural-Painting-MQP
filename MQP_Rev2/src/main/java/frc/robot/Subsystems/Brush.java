@@ -20,6 +20,7 @@ public class Brush extends SubsystemBase {
   Spark m_paintSelector = new Spark(Constants.k_PaintSelectorPort);
   Talon m_paintTrigger = new Talon(Constants.k_PaintTriggerPort);
   DigitalInput paintSelctorLimit = new DigitalInput(Constants.k_PaintSelectorLimitPort);
+  DigitalInput paintTriggerBtn = new DigitalInput(Constants.k_PaintTriggerBtnPort);
 
   /**
    * Creates a new Brush.
@@ -63,6 +64,11 @@ public class Brush extends SubsystemBase {
     return !paintSelctorLimit.get();
   }
 
+  // Checks Limit Switch to see if trigger is l;ined up correctly
+  public boolean getTriggerBtn() {
+    return !paintTriggerBtn.get();
+  }
+
   public void paintForTime(double speed) {
     m_paintTrigger.set(speed);
   }
@@ -90,6 +96,14 @@ public class Brush extends SubsystemBase {
       }    
       else
         brushState = BrushState.IDLE;
+        if(color.colorVal == this.currentColor){
+          System.out.println("Correct Color, Waiting for X/Y");
+        }
+
+        if(readyToPaint){
+          System.out.println("Correct Pos, Waiting for Selector");
+        }
+
     break;
 
     //Triggers the paint can and records the start time
@@ -145,7 +159,7 @@ public class Brush extends SubsystemBase {
         this.spinSelectorOff();
         brushState = BrushState.IDLE;
       }
-      
+
       this.lastSwitchState = this.getSelectorSwitch();
     break;
 
@@ -153,7 +167,7 @@ public class Brush extends SubsystemBase {
     //stops paint trigger motor, and resets the active color to none.
     //Returns to IDLE when finished
     case WAIT_FOR_PAINT:
-      if(brushTimer.get() - paintStartTime >= Constants.k_PaintingTime)
+      if(this.getTriggerBtn())
         this.stopPainting();
         this.currentColor = Color.NONE.colorVal;
         brushState = BrushState.IDLE;
