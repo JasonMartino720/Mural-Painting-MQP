@@ -41,7 +41,6 @@ public class Y_Traversal extends SubsystemBase {
 
   public double getEncPosition() {
     return this.EncY.getDistance();
-    //return this.EncY.get(); 
   }
 
   public void resetEnc(){

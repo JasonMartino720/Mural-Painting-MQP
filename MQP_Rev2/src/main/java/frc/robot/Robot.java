@@ -58,50 +58,13 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    System.out.println("Y Encoder Distance " + yTrav.getEncPosition());
-    System.out.println("X Encoder Distance " + xTrav.getEncPosition());
+    // System.out.println("Y Encoder Distance " + yTrav.getEncPosition());
+    // System.out.println("X Encoder Distance " + xTrav.getEncPosition());
     // System.out.println("Y ToF Distance " + yTrav.getToFPosition());
-    //System.out.println("Paint Selector Limit " + brush.getSelectorSwitch());
-    //System.out.println("Current Color " + brush.currentColor);
+     System.out.println("Paint Selector Limit " + brush.getSelectorSwitch());
+     System.out.println("Current Color " + brush.currentColor);
 
-    switch(this.statenum)
-    {
-      // Move Down
-      case 0:
-        if(yTrav.getEncPosition() < 1.5){
-          yTrav.setSpeed(-1);
-        }
-        else{
-          yTrav.setSpeed(0.0);
-          this.statenum = 1;
-          timer.start();
-        }
-      break;
-      
-      // Paint
-      case 1:
-        if(timer.get() < 0.5){
-          brush.paintForTime(1.0);
-        }
-        else{
-          brush.stopPainting();
-          this.statenum = 2;
-          timer.reset();
-          timer.start();
-        }
-      break;
-
-      // Reverse Trigger
-      case 2:
-        if(timer.get() < 0.1){
-          brush.paintForTime(-1.0);
-        }
-        else{
-          brush.stopPainting();
-          timer.stop();
-        }
-      break;
-    }
+    brush.update(Color.GREEN, false);
     
     if(!btn.get())
     {
