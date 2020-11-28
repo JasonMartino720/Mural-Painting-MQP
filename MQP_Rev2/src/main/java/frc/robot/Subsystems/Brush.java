@@ -30,12 +30,12 @@ public class Brush extends SubsystemBase {
   }
 
   public int currentColor, nextColor;
-  private double paintStartTime, lastTime, resetStartTime;
+  private double paintStartTime, lastTime, resetStartTime, waitStartTime, waitTime;
   private boolean isDoneSelecting, countUp, lastSwitchState;
   public static boolean finishedPainting = false;
 
   private enum BrushState {
-    INIT, IDLE, PAINTING, SELECTING_COLOR, WAIT_FOR_COLOR, WAIT_FOR_PAINT, WAIT_FOR_RESET
+    INIT, IDLE, PAINTING, SELECTING_COLOR, WAIT_FOR_COLOR, WAIT_FOR_PAINT, WAIT_FOR_RESET, WAIT_FOR_TIME
   }
 
   private BrushState brushState, nextBrushState;
@@ -93,7 +93,10 @@ public class Brush extends SubsystemBase {
   
     case IDLE:
       if (color.colorVal == this.currentColor && readyToPaint){
-        brushState = BrushState.PAINTING;
+        brushState = BrushState.WAIT_FOR_TIME;
+        this.waitStartTime = brushTimer.get();
+        this.waitTime = 0.25;
+        nextBrushState = BrushState.PAINTING;
       }
       else if (color.colorVal != this.currentColor){
         brushState = BrushState.SELECTING_COLOR;
@@ -189,6 +192,12 @@ public class Brush extends SubsystemBase {
         this.finishedPainting = true;
       }
     break;
+
+    case WAIT_FOR_TIME:
+      if(brushTimer.get() - waitStartTime > waitTime)
+      {
+        brushState = nextBrushState;
+      }
 
     }
   }
