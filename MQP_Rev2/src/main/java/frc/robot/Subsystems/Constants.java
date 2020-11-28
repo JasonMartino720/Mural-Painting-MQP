@@ -57,7 +57,7 @@ public class Constants {
         //Time to paint for
         public static final double k_PaintingTime = 0.25; //In Seconds
         //Paint Trigger Button
-        public static final double k_PaintTriggerBtnPort = 6;
+        public static final int k_PaintTriggerBtnPort = 6;
 
 //----VEX BUTTON---------------------------------------------------------------------
     //Button DIO Port
