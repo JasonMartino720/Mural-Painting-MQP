@@ -166,6 +166,7 @@ public class Brush extends SubsystemBase {
 
       if(this.isDoneSelecting)
       {
+        this.spinSelectorOff();
         brushState = BrushState.IDLE;
       }
       else 
