@@ -41,11 +41,56 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousInit() {
+  public void autonomousInit(int[][] paintPath) {
+    statenum = 0;
+    brush.init();
+    timer.start();
+    yTrav.resetEnc();
+    xTrav.resetEnc();
+    robotState = robotState.INIT;
+    public int currentColor, nextColor, wallLength, wallHeight;
+    public int[] currentPosition, nextPosition;
+    public boolean moveY;
+    wallLength = paint_path[0].length;
+    wallHeight = paint_path.length;
   }
 
   @Override
   public void autonomousPeriodic() {
+    switch (this.robotState) {
+      case Y_Traversal:
+        this.robotState = paint;
+      break;
+
+      case X_Traversal:
+        this.robotState = paint;
+      break;
+
+      case paint:
+        
+        this.robotState = iterate_color;
+      break;
+
+      case iterate_color:
+        if(currentPosition[0] == wallLength){
+          currentPosition[1] = currentPosition[1] + 1;
+          moveY = true;
+        }
+        else{
+          currentPosition[0] = currentPosition[0] + 1;
+          moveY = false;
+        }
+        currentColor = paintPath[currentPosition[0]][currentPosition[1]];
+        if(moveY){
+          this.robotState = Y_Traversal;
+        }
+        else{
+          this.robotState = X_Traversal;
+        }
+      break;
+
+
+    }
   }
 
   @Override
@@ -68,7 +113,7 @@ public class Robot extends TimedRobot {
      
     if(timer.get() < 2)
     {
-      xTrav.setSpeed(0.5);
+      xTrav.setSpeed(-0.5);
     }
     else
     {
@@ -99,6 +144,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testInit() {
+
   }
 
   @Override
