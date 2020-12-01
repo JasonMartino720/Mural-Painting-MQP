@@ -30,10 +30,15 @@ public class Constants {
     public static final double k_ToleranceX = 0.1;
 
     //PID Constants
+    public static final int k_IDX = 0;
+    public static final int k_TimeoutMs = 0;
+
     public static final double k_xP = 0.0;
     public static final double k_xI = 0.0;
     public static final double k_xD = 0.0;
     public static final double k_xF = 0.0;
+
+    
     
 // ----Y-Traversal--------------------------------------------------------------
     public static final int k_YTraversalPort = 1;
