@@ -32,12 +32,28 @@ public class X_Traversal extends SubsystemBase {
     //Any initialization that may need to be repeated, ie. should not be called in constructor
   }
 
-  public void setPositionClosedLoopSetpoint(double setpoint){
+  public void configPID(){
+    m_X.configNominalOutputForward(0, Constants.k_TimeoutMs);
+    m_X.configNominalOutputReverse(0, Constants.k_TimeoutMs);
+    m_X.configPeakOutputForward(1, Constants.k_TimeoutMs);
+    m_X.configPeakOutputReverse(-1, Constants.k_TimeoutMs);
+    
+    m_X.configAllowableClosedloopError(0, Constants.k_IDX, Constants.k_TimeoutMs);
+
+    m_X.config_kF(Constants.k_IDX, Constants.k_xF, Constants.k_TimeoutMs);
+    m_X.config_kP(Constants.k_IDX, Constants.k_xP, Constants.k_TimeoutMs);
+    m_X.config_kI(Constants.k_IDX, Constants.k_xI, Constants.k_TimeoutMs);
+    m_X.config_kD(Constants.k_IDX, Constants.k_xD, Constants.k_TimeoutMs);
+
+    m_X.setSelectedSensorPosition(this.getEncPosition());
+  }
+
+  public void setPositionClosedLoopSetpoint(final double setpoint) {
     m_X.set(ControlMode.Position, setpoint);
 
   }
 
-  public void setSpeed(double speed){
+  public void setSpeed(final double speed) {
     m_X.set(ControlMode.PercentOutput, speed);
   }
 
@@ -45,9 +61,8 @@ public class X_Traversal extends SubsystemBase {
     EncX.reset();
   }
 
-  public double getEncPosition() {
-    // return this.EncX.getDistance();
-    return this.EncX.getRaw();
+  public int getEncPosition() {
+    return (int) (1000 * this.EncX.getDistance());
   }
 
 }
