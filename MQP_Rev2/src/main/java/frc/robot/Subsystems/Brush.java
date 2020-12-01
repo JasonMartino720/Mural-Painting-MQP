@@ -81,24 +81,24 @@ public class Brush extends SubsystemBase {
     m_paintTrigger.set(0.0);
   }
 
-  public void update(Color color, boolean readyToPaint) {
+  public void update(Color startColor, Color nextColor, boolean readyToPaint) {
 
     switch (this.brushState) {
 
     case INIT:
       brushTimer.start();
-      this.currentColor = 1;
+      this.currentColor = startColor.colorVal;
       brushState = BrushState.IDLE;
     break;
   
     case IDLE:
-      if (color.colorVal == this.currentColor && readyToPaint){
+      if (nextColor.colorVal == this.currentColor && readyToPaint){
         brushState = BrushState.WAIT_FOR_TIME;
         this.waitStartTime = brushTimer.get();
         this.waitTime = 0.25;
         nextBrushState = BrushState.PAINTING;
       }
-      else if (color.colorVal != this.currentColor){
+      else if (nextColor.colorVal != this.currentColor){
         brushState = BrushState.SELECTING_COLOR;
       }    
       else
@@ -126,7 +126,7 @@ public class Brush extends SubsystemBase {
     //Sets state to WAIT_FOR_COLOR when finished 
     case SELECTING_COLOR:
       //Optimization to decide whether to turn right or left, pretty cool how simple it is
-      if(this.currentColor + 4 > color.colorVal) {
+      if(this.currentColor + 4 > nextColor.colorVal) {
         this.spinSelectorCW();
         countUp = true; //If turning clockwise then increment upwards at UPDATE
         brushState = BrushState.WAIT_FOR_COLOR;
@@ -163,7 +163,7 @@ public class Brush extends SubsystemBase {
         System.out.println("Last Switch State " + this.lastSwitchState);
       }
 
-      if(this.currentColor == color.colorVal){
+      if(this.currentColor == nextColor.colorVal){
         this.spinSelectorOff();
         brushState = BrushState.IDLE;
       }
