@@ -26,7 +26,11 @@ public class Robot extends TimedRobot {
   private final Brush brush = new Brush();
   private final DigitalInput btn = new DigitalInput(Constants.k_VexBtnPort);
   private final Timer timer = new Timer();
-
+  private final int[][] testList = {{1, 3, 2, 4, 5},
+                                    {1, 2, 1, 2, 1},
+                                    {2, 1, 2, 2, 3},
+                                    {1, 2, 1, 1, 2},
+                                    {2, 2, 3, 4, 1}}
   private int statenum = 0;
 
   @Override
@@ -50,7 +54,7 @@ public class Robot extends TimedRobot {
     robotState = robotState.INIT;
     public int currentColor, nextColor, wallLength, wallHeight;
     public int[] currentPosition, nextPosition;
-    public boolean moveY;
+    public boolean moveY, moveL, readyToPaint;
     wallLength = paint_path[0].length;
     wallHeight = paint_path.length;
   }
@@ -59,32 +63,62 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
     switch (this.robotState) {
       case Y_Traversal:
-        this.robotState = paint;
+        if(timer.get() < startTime + 4){
+          yTrav.setSpeed(1);
+        }
+        else{
+          yTrav.setSpeed(0.0);
+          readyToPaint = true;
+          this.robotState = paint;
+        }
       break;
 
       case X_Traversal:
-        this.robotState = paint;
+        if(timer.get() < startTime + 2){
+          xTrav.setSpeed(.5);
+        }
+        else{
+          xTrav.setSpeed(0.0);
+          readyToPaint = true;
+          this.robotState = paint;
+        }
       break;
 
       case paint:
-        
+        brush.update(currentColor, readyToPaint);
+        readyToPaint = false;
         this.robotState = iterate_color;
       break;
 
       case iterate_color:
-        if(currentPosition[0] == wallLength){
+        // if current x is at either end of the wall
+        // iterate Y direction 
+        if(currentPosition[0] == wallLength || currentPosition[0] == 0){
           currentPosition[1] = currentPosition[1] + 1;
           moveY = true;
+          if(moveL){
+          moveL = false;}
+          else{
+          moveL = true;}
         }
+        // iterate X direction 
         else{
-          currentPosition[0] = currentPosition[0] + 1;
+          if(!moveL){
+            currentPosition[0] = currentPosition[0] + 1;
+          }
+          else{
+            currentPosition[0] = currentPosition[0] - 1;
+          }
           moveY = false;
         }
+
         currentColor = paintPath[currentPosition[0]][currentPosition[1]];
         if(moveY){
+          startTime = timer.get();
           this.robotState = Y_Traversal;
         }
         else{
+          startTime = timer.get();
           this.robotState = X_Traversal;
         }
       break;
