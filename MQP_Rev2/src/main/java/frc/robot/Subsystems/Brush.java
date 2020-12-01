@@ -92,6 +92,12 @@ public class Brush extends SubsystemBase {
     break;
   
     case IDLE:
+
+      if(Brush.finishedPainting){
+        Brush.finishedPainting = false;
+      }
+      
+
       if (color.colorVal == this.currentColor && readyToPaint){
         brushState = BrushState.WAIT_FOR_TIME;
         this.waitStartTime = brushTimer.get();
@@ -116,6 +122,7 @@ public class Brush extends SubsystemBase {
     //Triggers the paint can and records the start time
     //Sets state to WAIT_FOR_PAINT when finished   
     case PAINTING:
+      Brush.finishedPainting = false;    
       paintStartTime = brushTimer.get();
       this.paintForTime();
       brushState = BrushState.WAIT_FOR_PAINT;
@@ -189,7 +196,7 @@ public class Brush extends SubsystemBase {
         this.stopPainting();
         //TODO: this.currentColor = Color.NONE.colorVal;
         brushState = BrushState.IDLE;
-        this.finishedPainting = true;
+        Brush.finishedPainting = true;
       }
     break;
 

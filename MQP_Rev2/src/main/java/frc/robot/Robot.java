@@ -8,6 +8,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.Subsystems.*;
 import edu.wpi.first.wpilibj.Timer;
@@ -27,7 +28,24 @@ public class Robot extends TimedRobot {
   private final DigitalInput btn = new DigitalInput(Constants.k_VexBtnPort);
   private final Timer timer = new Timer();
 
-  private int statenum = 0;
+  //Enums for main state machine
+  private enum MainState {
+    INIT, IDLE, SET_POSITIONS, WAIT_FOR_ALIGNMENT, UPDATE_BRUSH, WAIT_FOR_TIME
+  }
+
+  private static MainState state, nextState;
+  private static Color currentColor;
+
+  private int nextColor, wallLength, wallHeight;
+  private double startTime;
+  public static int[] currentPosition, nextPosition;
+  private boolean moveY, moveL, xAligned, yAligned, readyToPaint;
+
+  private final int[][] testGrid = { { 1, 3, 2, 4, 5 },
+    {1, 2, 1, 2, 1},
+    {2, 1, 2, 2, 3},
+    {1, 2, 1, 1, 2},
+    {2, 2, 3, 4, 1}}; 
 
   @Override
   public void robotInit() {
@@ -41,65 +59,33 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousInit(int[][] paintPath) {
-    statenum = 0;
+  public void autonomousInit() {
     brush.init();
     timer.start();
     yTrav.resetEnc();
     xTrav.resetEnc();
-    robotState = robotState.INIT;
-    public int currentColor, nextColor, wallLength, wallHeight;
-    public int[] currentPosition, nextPosition;
-    public boolean moveY;
-    wallLength = paint_path[0].length;
-    wallHeight = paint_path.length;
   }
 
   @Override
   public void autonomousPeriodic() {
-    switch (this.robotState) {
-      case Y_Traversal:
-        this.robotState = paint;
-      break;
-
-      case X_Traversal:
-        this.robotState = paint;
-      break;
-
-      case paint:
-        
-        this.robotState = iterate_color;
-      break;
-
-      case iterate_color:
-        if(currentPosition[0] == wallLength){
-          currentPosition[1] = currentPosition[1] + 1;
-          moveY = true;
-        }
-        else{
-          currentPosition[0] = currentPosition[0] + 1;
-          moveY = false;
-        }
-        currentColor = paintPath[currentPosition[0]][currentPosition[1]];
-        if(moveY){
-          this.robotState = Y_Traversal;
-        }
-        else{
-          this.robotState = X_Traversal;
-        }
-      break;
-
-
-    }
   }
 
   @Override
   public void teleopInit() {
-    statenum = 0;
     brush.init();
     timer.start();
     yTrav.resetEnc();
     xTrav.resetEnc();
+
+    //Not quite sure how you handled this in yours so i just made it up for now
+    final int[][] testGrid = { { 1, 3, 2, 4, 5 },
+    {1, 2, 1, 2, 1},
+    {2, 1, 2, 2, 3},
+    {1, 2, 1, 1, 2},
+    {2, 2, 3, 4, 1}}; 
+
+    wallLength = testGrid[0].length;
+    wallHeight = testGrid.length;
   }
 
   @Override
@@ -111,22 +97,84 @@ public class Robot extends TimedRobot {
     //  System.out.println("Paint Trigger Button " + brush.getTriggerBtn());
     //  System.out.println("Current Color " + brush.currentColor);
      
-    if(timer.get() < 2)
-    {
-      xTrav.setSpeed(-0.5);
-    }
-    else
-    {
-      xTrav.setSpeed(0.0);
-    }
+    switch(Robot.state){
+      case INIT:
+      break;
 
-    // if(!btn.get())
-    // {
-    //   yTrav.resetEnc();
-    //   xTrav.resetEnc();
-    //   timer.reset();
-    //   this.statenum = 0;
-    // }
+      case IDLE:
+        // if current x is at either end of the wall
+        // iterate Y direction 
+        if(Robot.currentPosition[0] == wallLength || Robot.currentPosition[0] == 0){
+          Robot.nextPosition[1] = Robot.currentPosition[1] + 1;
+          moveY = true;
+          
+          if(moveL){
+            moveL = false;
+          }
+          else{
+            moveL = true;
+          }
+        }
+        // iterate X direction 
+        else{
+          if(!moveL){
+            Robot.nextPosition[0] = Robot.nextPosition[0] + 1;
+          }
+          else{
+            Robot.nextPosition[0] = Robot.nextPosition[0] - 1;
+          }
+          moveY = false;
+        }
+
+        currentColor = currentColor.set(this.testGrid[currentPosition[0]][currentPosition[1]]);
+        Robot.state = MainState.SET_POSITIONS;
+      break;
+
+      case SET_POSITIONS:
+      //This one will need to be changed based on how were counting the distance, currently the encoder gets distance in inches
+        xTrav.setPositionClosedLoopSetpoint(Robot.currentPosition[0]);
+        startTime = timer.get();
+        if(moveY){
+          yTrav.setSpeed(1.0);
+        }
+        state = MainState.WAIT_FOR_ALIGNMENT;
+      break;
+
+      case WAIT_FOR_ALIGNMENT:
+        if(yTrav.atPosition()){
+          yTrav.setSpeed(0.0);
+          yAligned = true;
+        }
+
+        if(xTrav.atPosition()){
+          xAligned = true;
+        }
+
+        if(yAligned && xAligned){
+          readyToPaint = true;
+        }
+        else{
+          readyToPaint = false;
+          nextState = MainState.WAIT_FOR_ALIGNMENT;
+          state = MainState.UPDATE_BRUSH;
+        }
+        
+      break;
+
+      case UPDATE_BRUSH:
+        brush.update(currentColor, readyToPaint);
+        if(readyToPaint && !Brush.finishedPainting){
+          state = MainState.UPDATE_BRUSH;
+        }
+        else{ 
+          state = nextState;
+        }
+        
+      break;
+
+      case WAIT_FOR_TIME:
+      break;
+    }
   }
 
   @Override

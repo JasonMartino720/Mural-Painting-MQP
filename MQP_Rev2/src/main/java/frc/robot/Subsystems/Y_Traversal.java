@@ -9,6 +9,8 @@ package frc.robot.Subsystems;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
+
 import com.ctre.phoenix.motorcontrol.can.*;
 import com.ctre.phoenix.motorcontrol.*;
 
@@ -45,6 +47,10 @@ public class Y_Traversal extends SubsystemBase {
 
   public void resetEnc(){
     EncY.reset();
+  }
+
+  public boolean atPosition(){
+    return Math.abs(this.getEncPosition() - Robot.nextPosition[1]) < Constants.k_ToleranceY; 
   }
 
   public double getToFPosition(){

@@ -26,6 +26,8 @@ public class Constants {
     public static final double k_EncXMinRate = 0.125;
     // Encoder is reversed or not
     public static final boolean k_EncXReverse = true;
+    // Tolerance
+    public static final double k_ToleranceX = 0.1;
 
     //PID Constants
     public static final double k_xP = 0.0;
@@ -46,6 +48,8 @@ public class Constants {
         public static final double k_EncYMinRate = 0.125; 
         //Encoder is reversed or not
         public static final boolean k_EncYReverse = false;
+        //Tolerance
+        public static final double k_ToleranceY = 0.1;
 
 //----PAINT SELECTOR--------------------------------------------------------------
     //Constant int for Spark Channel

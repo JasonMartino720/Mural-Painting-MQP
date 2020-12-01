@@ -27,4 +27,48 @@ public enum Color{
         this.colorVal = colorVal;
     }
 
+    private Color retColor;
+
+    public Color set(int value){
+        switch(value){
+            case 1:
+               retColor = Color.RED;
+            break;
+
+            case 2:
+               retColor = Color.BLUE;
+            break;
+
+            case 3:
+               retColor = Color.GREEN;
+            break;
+
+            case 4:
+               retColor = Color.BLACK;
+            break;
+
+            case 5:
+               retColor = Color.WHITE;
+            break;
+
+            case 6:
+               retColor = Color.YELLOW;
+            break;
+
+            case 7:
+               retColor = Color.ORANGE;
+            break;
+
+            case 8:
+               retColor = Color.PURPLE;
+            break;
+
+            default:
+                retColor = Color.NONE;
+            break;
+        }
+        return retColor;
+    }
+
+
 }
