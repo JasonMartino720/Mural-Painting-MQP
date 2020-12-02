@@ -95,7 +95,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    // System.out.println("Y Encoder Distance " + yTrav.getEncPosition());
+    System.out.println("Y Encoder Distance " + yTrav.getEncPosition());
     // System.out.println("X Encoder Distance " + xTrav.getEncPosition());
     // System.out.println("Y ToF Distance " + yTrav.getToFPosition());
     //  System.out.println("Paint Selector Limit " + brush.getSelectorSwitch());

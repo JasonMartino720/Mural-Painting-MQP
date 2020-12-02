@@ -49,8 +49,12 @@ public class Y_Traversal extends SubsystemBase {
     EncY.reset();
   }
 
+  //Delete this variable and put back into one line return statement when print is no longer needed
+  private double retVal;
   public boolean atPosition(){
-    return Math.abs(this.getEncPosition() - Robot.nextPosition[1]*1.5) < Constants.k_ToleranceY; 
+    retVal =  Math.abs(this.getEncPosition() - Robot.nextPosition[1]*1.5);  
+    System.out.println("Y Closed Loop Error " + retVal);
+    return retVal  < Constants.k_ToleranceY;
   }
 
   public double getToFPosition(){
