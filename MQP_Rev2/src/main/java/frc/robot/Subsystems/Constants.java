@@ -32,8 +32,8 @@ public class Constants {
     public static final int k_TimeoutMs = 0;
 
     public static final double k_xP = 1.0;
-    public static final double k_xI = 1.0;
-    public static final double k_xD = 1.0;
+    public static final double k_xI = 0.0;
+    public static final double k_xD = 0.0;
     public static final double k_xF = 0.0;
 
     
