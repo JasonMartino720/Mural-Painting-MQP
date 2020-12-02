@@ -15,7 +15,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.*;
 
 public class X_Traversal extends SubsystemBase {
-  public final Encoder EncX = new Encoder(Constants.k_EncXPort1, Constants.k_EncXPort2);
+  public final Encoder EncX = new Encoder(Constants.k_EncXPort1, Constants.k_EncXPort2, false, Encoder.EncodingType.k2x);
   public final TalonSRX m_X = new TalonSRX(Constants.k_XTraversalPort);
   // private final PIDController PID_X = new PIDController(Constants.k_xP, Constants.k_xI, Constants.k_xD, Constants.k_xF, EncX, m_X);
   /**
@@ -67,8 +67,8 @@ public class X_Traversal extends SubsystemBase {
   }
 
   public int getEncPosition() {
-    //return (int) (1000 * this.EncX.getDistance());
-    return (int)(1000 * this.EncX.getRaw() / 8.6);
+    return (int) (1000 * this.EncX.getDistance());
+    //return (int)(1000 * this.EncX.getRaw() / 8.6);
   }
 
 }
