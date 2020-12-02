@@ -51,7 +51,7 @@ public class X_Traversal extends SubsystemBase {
   }
 
   public void setPositionClosedLoopSetpoint(final double setpoint) {
-    m_X.set(ControlMode.Position, 1000*setpoint);
+    m_X.set(ControlMode.Position, setpoint);
   }
 
   public void updatePositionValue(){
@@ -67,7 +67,8 @@ public class X_Traversal extends SubsystemBase {
   }
 
   public int getEncPosition() {
-    return (int) (1000 * this.EncX.getDistance());
+    //return (int) (1000 * this.EncX.getDistance());
+    return (int)(1000 * this.EncX.getRaw() / 8.6);
   }
 
 }
