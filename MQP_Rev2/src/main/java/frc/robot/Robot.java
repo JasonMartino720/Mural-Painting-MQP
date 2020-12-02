@@ -30,7 +30,7 @@ public class Robot extends TimedRobot {
                                     {1, 2, 1, 2, 1},
                                     {2, 1, 2, 2, 3},
                                     {1, 2, 1, 1, 2},
-                                    {2, 2, 3, 4, 1}}
+                                    {2, 2, 3, 4, 1}};
   private int statenum = 0;
 
   @Override
@@ -45,86 +45,13 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousInit(int[][] paintPath) {
-    statenum = 0;
-    brush.init();
-    timer.start();
-    yTrav.resetEnc();
-    xTrav.resetEnc();
-    robotState = robotState.INIT;
-    public int currentColor, nextColor, wallLength, wallHeight;
-    public int[] currentPosition, nextPosition;
-    public boolean moveY, moveL, readyToPaint;
-    wallLength = paint_path[0].length;
-    wallHeight = paint_path.length;
+  public void autonomousInit() {
+    
   }
 
   @Override
   public void autonomousPeriodic() {
-    switch (this.robotState) {
-      case Y_Traversal:
-        if(timer.get() < startTime + 4){
-          yTrav.setSpeed(1);
-        }
-        else{
-          yTrav.setSpeed(0.0);
-          readyToPaint = true;
-          this.robotState = paint;
-        }
-      break;
-
-      case X_Traversal:
-        if(timer.get() < startTime + 2){
-          xTrav.setSpeed(.5);
-        }
-        else{
-          xTrav.setSpeed(0.0);
-          readyToPaint = true;
-          this.robotState = paint;
-        }
-      break;
-
-      case paint:
-        brush.update(currentColor, readyToPaint);
-        readyToPaint = false;
-        this.robotState = iterate_color;
-      break;
-
-      case iterate_color:
-        // if current x is at either end of the wall
-        // iterate Y direction 
-        if(currentPosition[0] == wallLength || currentPosition[0] == 0){
-          currentPosition[1] = currentPosition[1] + 1;
-          moveY = true;
-          if(moveL){
-          moveL = false;}
-          else{
-          moveL = true;}
-        }
-        // iterate X direction 
-        else{
-          if(!moveL){
-            currentPosition[0] = currentPosition[0] + 1;
-          }
-          else{
-            currentPosition[0] = currentPosition[0] - 1;
-          }
-          moveY = false;
-        }
-
-        currentColor = paintPath[currentPosition[0]][currentPosition[1]];
-        if(moveY){
-          startTime = timer.get();
-          this.robotState = Y_Traversal;
-        }
-        else{
-          startTime = timer.get();
-          this.robotState = X_Traversal;
-        }
-      break;
-
-
-    }
+    
   }
 
   @Override
@@ -144,15 +71,9 @@ public class Robot extends TimedRobot {
     //  System.out.println("Paint Selector Limit " + brush.getSelectorSwitch());
     //  System.out.println("Paint Trigger Button " + brush.getTriggerBtn());
     //  System.out.println("Current Color " + brush.currentColor);
-     
-    if(timer.get() < 2)
-    {
-      xTrav.setSpeed(-0.5);
-    }
-    else
-    {
-      xTrav.setSpeed(0.0);
-    }
+    
+    yTrav.setPositionClosedLoopSetpoint(1.5); 
+    xTrav.setPositionClosedLoopSetpoint(1.5);
 
     // if(!btn.get())
     // {
