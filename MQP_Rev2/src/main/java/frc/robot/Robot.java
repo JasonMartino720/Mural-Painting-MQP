@@ -40,7 +40,8 @@ public class Robot extends TimedRobot {
 
   private int nextColor, wallLength, wallHeight;
   private double startTime;
-  public static int[] currentPosition, nextPosition;
+  public static int currentPosition[] = new int[2];
+  public static int nextPosition[] = new int[2];
   private boolean moveY, moveL, xAligned, yAligned, readyToPaint;
 
   private final int[][] testGrid = { { 1, 3, 2, 4, 5 },
