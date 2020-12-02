@@ -49,6 +49,8 @@ public class Robot extends TimedRobot {
     {2, 1, 2, 2, 3},
     {1, 2, 1, 1, 2},
     {2, 2, 3, 4, 1}}; 
+  
+  private int _loops = 0;
 
   @Override
   public void robotInit() {
@@ -63,6 +65,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+
     brush.init();
     timer.start();
     yTrav.resetEnc();
@@ -75,6 +78,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    xTrav.updatePositionValue();
     brush.init();
     timer.start();
     yTrav.resetEnc();
@@ -82,31 +86,28 @@ public class Robot extends TimedRobot {
     state = MainState.INIT;
     currentColor = Color.NONE;
 
-    //Not quite sure how you handled this in yours so i just made it up for now
-    final int[][] testGrid = { { 1, 3, 2, 4, 5 },
-    {1, 2, 1, 2, 1},
-    {2, 1, 2, 2, 3},
-    {1, 2, 1, 1, 2},
-    {2, 2, 3, 4, 1}}; 
-
     wallLength = testGrid[0].length;
     wallHeight = testGrid.length;
   }
 
   @Override
   public void teleopPeriodic() {
-    System.out.println("Y Encoder Distance " + yTrav.getEncPosition());
-    // System.out.println("X Encoder Distance " + xTrav.getEncPosition());
-    // System.out.println("Y ToF Distance " + yTrav.getToFPosition());
-    //  System.out.println("Paint Selector Limit " + brush.getSelectorSwitch());
-    //  System.out.println("Paint Trigger Button " + brush.getTriggerBtn());
-    //  System.out.println("Current Color " + brush.currentColor);
-     
+     if (++_loops >= 10) {
+			_loops = 0;
+      System.out.println("X Encoder Distance " + xTrav.getEncPosition());
+      System.out.println("X Encoder Raw " + xTrav.EncX.getRaw());
+      System.out.println("X PID Error " + xTrav.m_X.getClosedLoopError());
+      System.out.println("Y Encoder Distance " + yTrav.getEncPosition());
+      // System.out.println("Y ToF Distance " + yTrav.getToFPosition());
+      //  System.out.println("Paint Selector Limit " + brush.getSelectorSwitch());
+      //  System.out.println("Paint Trigger Button " + brush.getTriggerBtn());
+      //  System.out.println("Current Color " + brush.currentColor);
+     }
     switch(Robot.state){
       case INIT:
-      moveL = false;
-      moveY = false;
-      state = MainState.IDLE;
+        moveL = false;
+        moveY = false;
+        state = MainState.IDLE;
       break;
 
       case IDLE:

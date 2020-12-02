@@ -7,6 +7,7 @@
 
 package frc.robot.Subsystems;
 
+import edu.wpi.first.wpilibj.CounterBase;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -15,8 +16,8 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.*;
 
 public class X_Traversal extends SubsystemBase {
-  private final Encoder EncX = new Encoder(Constants.k_EncXPort1, Constants.k_EncXPort2);
-  private final TalonSRX m_X = new TalonSRX(Constants.k_XTraversalPort);
+  public final Encoder EncX = new Encoder(Constants.k_EncXPort1, Constants.k_EncXPort2, Constants.k_EncXReverse, CounterBase.EncodingType.k4X);
+  public final TalonSRX m_X = new TalonSRX(Constants.k_XTraversalPort);
   // private final PIDController PID_X = new PIDController(Constants.k_xP, Constants.k_xI, Constants.k_xD, Constants.k_xF, EncX, m_X);
   /**
    * Creates a new X_Traversal.
@@ -26,19 +27,21 @@ public class X_Traversal extends SubsystemBase {
     EncX.setDistancePerPulse(Constants.k_EncXConversion);
     // EncX.setMinRate(Constants.k_EncXMinRate);
     EncX.setReverseDirection(Constants.k_EncXReverse);
+    this.configPID();
   }
 
   public void init(){
     //Any initialization that may need to be repeated, ie. should not be called in constructor
+
   }
 
   public void configPID(){
     m_X.configNominalOutputForward(0, Constants.k_TimeoutMs);
     m_X.configNominalOutputReverse(0, Constants.k_TimeoutMs);
-    m_X.configPeakOutputForward(1, Constants.k_TimeoutMs);
-    m_X.configPeakOutputReverse(-1, Constants.k_TimeoutMs);
+    m_X.configPeakOutputForward(0.75, Constants.k_TimeoutMs);
+    m_X.configPeakOutputReverse(-0.75, Constants.k_TimeoutMs);
     
-    m_X.configAllowableClosedloopError(0, Constants.k_IDX, Constants.k_TimeoutMs);
+    //m_X.configAllowableClosedloopError(0, Constants.k_IDX, Constants.k_TimeoutMs);
 
     m_X.config_kF(Constants.k_IDX, Constants.k_xF, Constants.k_TimeoutMs);
     m_X.config_kP(Constants.k_IDX, Constants.k_xP, Constants.k_TimeoutMs);
@@ -49,12 +52,15 @@ public class X_Traversal extends SubsystemBase {
   }
 
   public void setPositionClosedLoopSetpoint(final double setpoint) {
-    m_X.set(ControlMode.Position, setpoint);
+    m_X.set(ControlMode.Position, 1000 * setpoint);
+  }
 
+  public void updatePositionValue(){
+    m_X.setSelectedSensorPosition(this.getEncPosition());
   }
 
   public void setSpeed(final double speed) {
-    m_X.set(ControlMode.PercentOutput, speed);
+    m_X.set(ControlMode.PercentOutput, speed); 
   }
 
   public void resetEnc(){
@@ -63,6 +69,7 @@ public class X_Traversal extends SubsystemBase {
 
   public int getEncPosition() {
     return (int) (1000 * this.EncX.getDistance());
+    //return (int)(1000 * this.EncX.getRaw() / 8.6);
   }
 
   public boolean atPosition() {
