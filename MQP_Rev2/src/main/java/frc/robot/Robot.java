@@ -96,7 +96,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     // System.out.println("Y Encoder Distance " + yTrav.getEncPosition());
-    System.out.println("X Encoder Distance " + xTrav.getEncPosition());
+    // System.out.println("X Encoder Distance " + xTrav.getEncPosition());
     // System.out.println("Y ToF Distance " + yTrav.getToFPosition());
     //  System.out.println("Paint Selector Limit " + brush.getSelectorSwitch());
     //  System.out.println("Paint Trigger Button " + brush.getTriggerBtn());
@@ -110,6 +110,8 @@ public class Robot extends TimedRobot {
       case IDLE:
         // if current x is at either end of the wall
         // iterate Y direction 
+
+        // make sure it goes to the side to start
         if(Robot.currentPosition[0] == wallLength || Robot.currentPosition[0] == 0){
           Robot.nextPosition[1] = Robot.currentPosition[1] + 1;
           moveY = true;
@@ -124,15 +126,15 @@ public class Robot extends TimedRobot {
         // iterate X direction 
         else{
           if(!moveL){
-            Robot.nextPosition[0] = Robot.nextPosition[0] + 1;
+            Robot.nextPosition[0] = Robot.currentPosition[0] + 1;
           }
           else{
-            Robot.nextPosition[0] = Robot.nextPosition[0] - 1;
+            Robot.nextPosition[0] = Robot.currentPosition[0] - 1;
           }
           moveY = false;
         }
 
-        currentColor = currentColor.set(this.testGrid[Robot.currentPosition[0]][Robot.currentPosition[1]]);
+        currentColor = currentColor.set(this.testGrid[Robot.nextPosition[0]][Robot.nextPosition[1]]);
         Robot.state = MainState.SET_POSITIONS;
       break;
 
