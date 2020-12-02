@@ -80,6 +80,7 @@ public class Robot extends TimedRobot {
     yTrav.resetEnc();
     xTrav.resetEnc();
     state = MainState.INIT;
+    currentColor = Color.NONE;
 
     //Not quite sure how you handled this in yours so i just made it up for now
     final int[][] testGrid = { { 1, 3, 2, 4, 5 },
@@ -131,7 +132,7 @@ public class Robot extends TimedRobot {
           moveY = false;
         }
 
-        currentColor = currentColor.set(this.testGrid[currentPosition[0]][currentPosition[1]]);
+        currentColor = currentColor.set(this.testGrid[Robot.currentPosition[0]][Robot.currentPosition[1]]);
         Robot.state = MainState.SET_POSITIONS;
       break;
 
