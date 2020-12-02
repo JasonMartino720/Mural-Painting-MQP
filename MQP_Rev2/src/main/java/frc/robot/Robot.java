@@ -31,7 +31,9 @@ public class Robot extends TimedRobot {
                                     {2, 1, 2, 2, 3},
                                     {1, 2, 1, 1, 2},
                                     {2, 2, 3, 4, 1}};
-  private int statenum = 0;
+
+
+  private int _loops = 0;
 
   @Override
   public void robotInit() {
@@ -56,23 +58,21 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    statenum = 0;
     brush.init();
     timer.start();
+    xTrav.configPID();
     yTrav.resetEnc();
     xTrav.resetEnc();
   }
 
   @Override
   public void teleopPeriodic() {
-    // System.out.println("Y Encoder Distance " + yTrav.getEncPosition());
-    System.out.println("X Encoder Distance " + xTrav.getEncPosition());
-    // System.out.println("Y ToF Distance " + yTrav.getToFPosition());
-    //  System.out.println("Paint Selector Limit " + brush.getSelectorSwitch());
-    //  System.out.println("Paint Trigger Button " + brush.getTriggerBtn());
-    //  System.out.println("Current Color " + brush.currentColor);
-    
-    yTrav.setPositionClosedLoopSetpoint(1.5); 
+    if (++_loops >= 10) {
+			_loops = 0;
+      System.out.println("X Encoder Distance " + xTrav.getEncPosition());
+      System.out.println("X PID Error " + xTrav.m_X.getClosedLoopError());
+    }
+
     xTrav.setPositionClosedLoopSetpoint(1.5);
 
     // if(!btn.get())

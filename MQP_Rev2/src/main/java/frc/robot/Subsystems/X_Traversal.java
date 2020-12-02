@@ -16,7 +16,7 @@ import com.ctre.phoenix.motorcontrol.can.*;
 
 public class X_Traversal extends SubsystemBase {
   private final Encoder EncX = new Encoder(Constants.k_EncXPort1, Constants.k_EncXPort2);
-  private final TalonSRX m_X = new TalonSRX(Constants.k_XTraversalPort);
+  public final TalonSRX m_X = new TalonSRX(Constants.k_XTraversalPort);
   // private final PIDController PID_X = new PIDController(Constants.k_xP, Constants.k_xI, Constants.k_xD, Constants.k_xF, EncX, m_X);
   /**
    * Creates a new X_Traversal.
@@ -26,10 +26,12 @@ public class X_Traversal extends SubsystemBase {
     EncX.setDistancePerPulse(Constants.k_EncXConversion);
     // EncX.setMinRate(Constants.k_EncXMinRate);
     EncX.setReverseDirection(Constants.k_EncXReverse);
+    this.configPID();
   }
 
   public void init(){
     //Any initialization that may need to be repeated, ie. should not be called in constructor
+
   }
 
   public void configPID(){
@@ -38,14 +40,14 @@ public class X_Traversal extends SubsystemBase {
     m_X.configPeakOutputForward(1, Constants.k_TimeoutMs);
     m_X.configPeakOutputReverse(-1, Constants.k_TimeoutMs);
     
-    m_X.configAllowableClosedloopError(0, Constants.k_IDX, Constants.k_TimeoutMs);
+    //m_X.configAllowableClosedloopError(0, Constants.k_IDX, Constants.k_TimeoutMs);
 
     m_X.config_kF(Constants.k_IDX, Constants.k_xF, Constants.k_TimeoutMs);
     m_X.config_kP(Constants.k_IDX, Constants.k_xP, Constants.k_TimeoutMs);
     m_X.config_kI(Constants.k_IDX, Constants.k_xI, Constants.k_TimeoutMs);
     m_X.config_kD(Constants.k_IDX, Constants.k_xD, Constants.k_TimeoutMs);
 
-    m_X.setSelectedSensorPosition(this.getEncPosition());
+    //m_X.setSelectedSensorPosition(this.getEncPosition());
   }
 
   public void setPositionClosedLoopSetpoint(final double setpoint) {
@@ -54,7 +56,7 @@ public class X_Traversal extends SubsystemBase {
   }
 
   public void setSpeed(final double speed) {
-    m_X.set(ControlMode.PercentOutput, speed);
+    m_X.set(ControlMode.PercentOutput, speed); 
   }
 
   public void resetEnc(){
