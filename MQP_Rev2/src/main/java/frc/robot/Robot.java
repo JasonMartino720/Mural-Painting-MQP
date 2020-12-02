@@ -104,6 +104,8 @@ public class Robot extends TimedRobot {
      
     switch(Robot.state){
       case INIT:
+      moveL = false;
+      moveY = false;
       state = MainState.IDLE;
       break;
 
@@ -112,7 +114,7 @@ public class Robot extends TimedRobot {
         // iterate Y direction 
 
         // make sure it goes to the side to start
-        if(Robot.currentPosition[0] == wallLength || Robot.currentPosition[0] == 0){
+        if(Robot.currentPosition[0] == wallLength || Robot.currentPosition[0] == 0 && !moveY){
           Robot.nextPosition[1] = Robot.currentPosition[1] + 1;
           moveY = true;
           
@@ -129,7 +131,7 @@ public class Robot extends TimedRobot {
             Robot.nextPosition[0] = Robot.currentPosition[0] + 1;
           }
           else{
-            Robot.nextPosition[0] = Robot.currentPosition[0] - 1;
+            Robot.nextPosition[0] = Robot.currentPosition[0] + 1;
           }
           moveY = false;
         }
@@ -143,7 +145,7 @@ public class Robot extends TimedRobot {
         xTrav.setPositionClosedLoopSetpoint(Robot.nextPosition[0] * 1500);
         startTime = timer.get();
         if(moveY){
-          yTrav.setSpeed(1.0);
+          yTrav.setSpeed(-1.0);
         }
         state = MainState.WAIT_FOR_ALIGNMENT;
       break;
