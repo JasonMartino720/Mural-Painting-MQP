@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import javax.lang.model.util.ElementScanner6;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -132,7 +134,7 @@ public class Robot extends TimedRobot {
 
       case SET_POSITIONS:
       //This one will need to be changed based on how were counting the distance, currently the encoder gets distance in inches
-        xTrav.setPositionClosedLoopSetpoint(Robot.currentPosition[0]);
+        xTrav.setPositionClosedLoopSetpoint(Robot.nextPosition[0] * 1500);
         startTime = timer.get();
         if(moveY){
           yTrav.setSpeed(1.0);
@@ -145,13 +147,22 @@ public class Robot extends TimedRobot {
           yTrav.setSpeed(0.0);
           yAligned = true;
         }
+        else {
+          yAligned = false;
+        }
 
         if(xTrav.atPosition()){
           xAligned = true;
         }
+        else {
+          xAligned = false;
+        }
 
         if(yAligned && xAligned){
           readyToPaint = true;
+          nextState = MainState.IDLE;
+          state = MainState.UPDATE_BRUSH;
+          Robot.currentPosition = Robot.nextPosition;
         }
         else{
           readyToPaint = false;

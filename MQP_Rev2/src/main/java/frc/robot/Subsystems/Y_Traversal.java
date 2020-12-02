@@ -50,7 +50,7 @@ public class Y_Traversal extends SubsystemBase {
   }
 
   public boolean atPosition(){
-    return Math.abs(this.getEncPosition() - Robot.nextPosition[1]) < Constants.k_ToleranceY; 
+    return Math.abs(this.getEncPosition() - Robot.nextPosition[1]*1.5) < Constants.k_ToleranceY; 
   }
 
   public double getToFPosition(){
