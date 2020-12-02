@@ -70,6 +70,7 @@ public class Robot extends TimedRobot {
     if (++_loops >= 10) {
 			_loops = 0;
       System.out.println("X Encoder Distance " + xTrav.getEncPosition());
+      System.out.println("X Encoder Raw " + xTrav.EncX.getRaw());
       System.out.println("X PID Error " + xTrav.m_X.getClosedLoopError());
     }
 
