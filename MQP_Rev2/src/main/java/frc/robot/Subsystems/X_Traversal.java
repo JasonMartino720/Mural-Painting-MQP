@@ -47,7 +47,7 @@ public class X_Traversal extends SubsystemBase {
     m_X.config_kI(Constants.k_IDX, Constants.k_xI, Constants.k_TimeoutMs);
     m_X.config_kD(Constants.k_IDX, Constants.k_xD, Constants.k_TimeoutMs);
 
-    //m_X.setSelectedSensorPosition(this.getEncPosition());
+    m_X.setSelectedSensorPosition(this.getEncPosition());
   }
 
   public void setPositionClosedLoopSetpoint(final double setpoint) {
