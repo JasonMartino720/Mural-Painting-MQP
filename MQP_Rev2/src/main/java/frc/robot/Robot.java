@@ -78,6 +78,7 @@ public class Robot extends TimedRobot {
     timer.start();
     yTrav.resetEnc();
     xTrav.resetEnc();
+    state = MainState.INIT;
 
     //Not quite sure how you handled this in yours so i just made it up for now
     final int[][] testGrid = { { 1, 3, 2, 4, 5 },
@@ -101,6 +102,7 @@ public class Robot extends TimedRobot {
      
     switch(Robot.state){
       case INIT:
+      state = MainState.IDLE;
       break;
 
       case IDLE:
