@@ -103,6 +103,9 @@ public class Robot extends TimedRobot {
       //  System.out.println("Paint Trigger Button " + brush.getTriggerBtn());
       //  System.out.println("Current Color " + brush.currentColor);
      }
+
+     xTrav.updatePositionValue();
+
     switch(Robot.state){
       case INIT:
         moveL = false;
@@ -143,7 +146,7 @@ public class Robot extends TimedRobot {
 
       case SET_POSITIONS:
       //This one will need to be changed based on how were counting the distance, currently the encoder gets distance in inches
-        xTrav.setPositionClosedLoopSetpoint(Robot.nextPosition[0] * 1500);
+        xTrav.setPositionClosedLoopSetpoint(Robot.nextPosition[0] * 1.5);
         startTime = timer.get();
         if(moveY){
           yTrav.setSpeed(-1.0);
