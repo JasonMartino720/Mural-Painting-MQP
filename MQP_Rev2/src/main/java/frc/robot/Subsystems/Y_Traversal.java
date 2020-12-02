@@ -9,6 +9,8 @@ package frc.robot.Subsystems;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
+
 import com.ctre.phoenix.motorcontrol.can.*;
 import com.ctre.phoenix.motorcontrol.*;
 
@@ -45,6 +47,14 @@ public class Y_Traversal extends SubsystemBase {
 
   public void resetEnc(){
     EncY.reset();
+  }
+
+  //Delete this variable and put back into one line return statement when print is no longer needed
+  private double retVal;
+  public boolean atPosition(){
+    retVal =  Math.abs(this.getEncPosition() - Robot.nextPosition[1]*1.5);  
+    System.out.println("Y Closed Loop Error " + retVal);
+    return retVal  < Constants.k_ToleranceY;
   }
 
   public double getToFPosition(){

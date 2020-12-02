@@ -7,7 +7,10 @@
 
 package frc.robot;
 
+import javax.lang.model.util.ElementScanner6;
+
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.Subsystems.*;
 import edu.wpi.first.wpilibj.Timer;
@@ -26,13 +29,27 @@ public class Robot extends TimedRobot {
   private final Brush brush = new Brush();
   private final DigitalInput btn = new DigitalInput(Constants.k_VexBtnPort);
   private final Timer timer = new Timer();
-  private final int[][] testList = {{1, 3, 2, 4, 5},
-                                    {1, 2, 1, 2, 1},
-                                    {2, 1, 2, 2, 3},
-                                    {1, 2, 1, 1, 2},
-                                    {2, 2, 3, 4, 1}};
 
+  //Enums for main state machine
+  private enum MainState {
+    INIT, IDLE, SET_POSITIONS, WAIT_FOR_ALIGNMENT, UPDATE_BRUSH, WAIT_FOR_TIME
+  }
 
+  private static MainState state, nextState;
+  private static Color currentColor;
+
+  private int nextColor, wallLength, wallHeight;
+  private double startTime;
+  public static int currentPosition[] = new int[2];
+  public static int nextPosition[] = new int[2];
+  private boolean moveY, moveL, xAligned, yAligned, readyToPaint;
+
+  private final int[][] testGrid = { { 1, 3, 2, 4, 5 },
+    {1, 2, 1, 2, 1},
+    {2, 1, 2, 2, 3},
+    {1, 2, 1, 1, 2},
+    {2, 2, 3, 4, 1}}; 
+  
   private int _loops = 0;
 
   @Override
@@ -48,44 +65,136 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    
-  }
 
-  @Override
-  public void autonomousPeriodic() {
-    
-  }
-
-  @Override
-  public void teleopInit() {
     brush.init();
     timer.start();
-    xTrav.configPID();
     yTrav.resetEnc();
     xTrav.resetEnc();
   }
 
   @Override
+  public void autonomousPeriodic() {
+  }
+
+  @Override
+  public void teleopInit() {
+    xTrav.updatePositionValue();
+    brush.init();
+    timer.start();
+    yTrav.resetEnc();
+    xTrav.resetEnc();
+    state = MainState.INIT;
+    currentColor = Color.NONE;
+
+    wallLength = testGrid[0].length;
+    wallHeight = testGrid.length;
+  }
+
+  @Override
   public void teleopPeriodic() {
-    if (++_loops >= 10) {
+     if (++_loops >= 10) {
 			_loops = 0;
       System.out.println("X Encoder Distance " + xTrav.getEncPosition());
       System.out.println("X Encoder Raw " + xTrav.EncX.getRaw());
       System.out.println("X PID Error " + xTrav.m_X.getClosedLoopError());
+      System.out.println("Y Encoder Distance " + yTrav.getEncPosition());
+      // System.out.println("Y ToF Distance " + yTrav.getToFPosition());
+      //  System.out.println("Paint Selector Limit " + brush.getSelectorSwitch());
+      //  System.out.println("Paint Trigger Button " + brush.getTriggerBtn());
+      //  System.out.println("Current Color " + brush.currentColor);
+     }
+    switch(Robot.state){
+      case INIT:
+        moveL = false;
+        moveY = false;
+        state = MainState.IDLE;
+      break;
+
+      case IDLE:
+        // if current x is at either end of the wall
+        // iterate Y direction 
+
+        // make sure it goes to the side to start
+        if(Robot.currentPosition[0] == wallLength || Robot.currentPosition[0] == 0 && !moveY){
+          Robot.nextPosition[1] = Robot.currentPosition[1] + 1;
+          moveY = true;
+          
+          if(moveL){
+            moveL = false;
+          }
+          else{
+            moveL = true;
+          }
+        }
+        // iterate X direction 
+        else{
+          if(!moveL){
+            Robot.nextPosition[0] = Robot.currentPosition[0] + 1;
+          }
+          else{
+            Robot.nextPosition[0] = Robot.currentPosition[0] + 1;
+          }
+          moveY = false;
+        }
+
+        currentColor = currentColor.set(this.testGrid[Robot.nextPosition[0]][Robot.nextPosition[1]]);
+        Robot.state = MainState.SET_POSITIONS;
+      break;
+
+      case SET_POSITIONS:
+      //This one will need to be changed based on how were counting the distance, currently the encoder gets distance in inches
+        xTrav.setPositionClosedLoopSetpoint(Robot.nextPosition[0] * 1500);
+        startTime = timer.get();
+        if(moveY){
+          yTrav.setSpeed(-1.0);
+        }
+        state = MainState.WAIT_FOR_ALIGNMENT;
+      break;
+
+      case WAIT_FOR_ALIGNMENT:
+        if(yTrav.atPosition()){
+          yTrav.setSpeed(0.0);
+          yAligned = true;
+        }
+        else {
+          yAligned = false;
+        }
+
+        if(xTrav.atPosition()){
+          xAligned = true;
+        }
+        else {
+          xAligned = false;
+        }
+
+        if(yAligned && xAligned){
+          readyToPaint = true;
+          nextState = MainState.IDLE;
+          state = MainState.UPDATE_BRUSH;
+          Robot.currentPosition = Robot.nextPosition;
+        }
+        else{
+          readyToPaint = false;
+          nextState = MainState.WAIT_FOR_ALIGNMENT;
+          state = MainState.UPDATE_BRUSH;
+        }
+        
+      break;
+
+      case UPDATE_BRUSH:
+        brush.update(currentColor, readyToPaint);
+        if(readyToPaint && !Brush.finishedPainting){
+          state = MainState.UPDATE_BRUSH;
+        }
+        else{ 
+          state = nextState;
+        }
+        
+      break;
+
+      case WAIT_FOR_TIME:
+      break;
     }
-
-    xTrav.updatePositionValue();
-    xTrav.setPositionClosedLoopSetpoint(-1.5);
-
-
-
-    // if(!btn.get())
-    // {
-    //   yTrav.resetEnc();
-    //   xTrav.resetEnc();
-    //   timer.reset();
-    //   this.statenum = 0;
-    // }
   }
 
   @Override

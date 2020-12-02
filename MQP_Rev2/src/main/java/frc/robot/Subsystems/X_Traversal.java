@@ -72,4 +72,8 @@ public class X_Traversal extends SubsystemBase {
     //return (int)(1000 * this.EncX.getRaw() / 8.6);
   }
 
+  public boolean atPosition() {
+    return m_X.getClosedLoopError() < Constants.k_ToleranceX;
+  }
+
 }
