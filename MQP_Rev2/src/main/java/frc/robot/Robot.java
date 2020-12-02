@@ -73,7 +73,7 @@ public class Robot extends TimedRobot {
       System.out.println("X PID Error " + xTrav.m_X.getClosedLoopError());
     }
 
-    xTrav.setPositionClosedLoopSetpoint(1.5);
+    xTrav.setPositionClosedLoopSetpoint(-1.5);
 
     // if(!btn.get())
     // {
