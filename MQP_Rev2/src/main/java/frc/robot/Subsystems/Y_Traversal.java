@@ -53,7 +53,7 @@ public class Y_Traversal extends SubsystemBase {
   private double retVal;
   public boolean atPosition(){
     retVal =  Math.abs(this.getEncPosition() - Robot.nextPosition[1]*1.5);  
-    System.out.println("Y Closed Loop Error " + retVal);
+    //System.out.println("Y Closed Loop Error " + retVal);
     return retVal  < Constants.k_ToleranceY;
   }
 

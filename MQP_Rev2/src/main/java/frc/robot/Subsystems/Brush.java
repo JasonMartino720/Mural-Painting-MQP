@@ -81,13 +81,16 @@ public class Brush extends SubsystemBase {
     m_paintTrigger.set(0.0);
   }
 
-  public void update(Color color, boolean readyToPaint) {
-
+  public void update(Color previousColor, Color color, boolean readyToPaint) {
+    //System.out.println("previous color" + previousColor + "current color: " + color);
     switch (this.brushState) {
-
+    
     case INIT:
       brushTimer.start();
-      this.currentColor = 1;
+      if(this.currentColor != color.colorVal){
+        this.currentColor = previousColor.colorVal;
+      }
+      System.out.println("init");
       brushState = BrushState.IDLE;
     break;
   
@@ -126,28 +129,48 @@ public class Brush extends SubsystemBase {
       paintStartTime = brushTimer.get();
       this.paintForTime();
       brushState = BrushState.WAIT_FOR_PAINT;
-      System.out.println("BEGIN PAINTING PROCEDURE");
+      //System.out.println("BEGIN PAINTING PROCEDURE");
     break;
     
     //Starts the color selector moving the ideal direction
     //Sets state to WAIT_FOR_COLOR when finished 
     case SELECTING_COLOR:
       //Optimization to decide whether to turn right or left, pretty cool how simple it is
-      if(this.currentColor + 4 > color.colorVal) {
-        this.spinSelectorCW();
-        countUp = true; //If turning clockwise then increment upwards at UPDATE
-        brushState = BrushState.WAIT_FOR_COLOR;
+      System.out.println("current color: " + this.currentColor + " desired color: " + color.colorVal);
+      if(this.currentColor >= 4){
+        if(color.colorVal <= (this.currentColor + 4) && color.colorVal > this.currentColor){
+          this.spinSelectorCCW();
+          System.out.println("ccw");
+          countUp = true; //If turning counter-clockwise then increment downwards at UPDATE
+          brushState = BrushState.WAIT_FOR_COLOR;
+        }
+        else{
+          this.spinSelectorCW();
+          System.out.println("cw");
+          countUp = false; //If turning clockwise then increment upwards at UPDATE
+          brushState = BrushState.WAIT_FOR_COLOR;
+        }
       }
-      else{ 
-        this.spinSelectorCCW();
-        countUp = false; //If turning counter-clockwise then increment downwards at UPDATE
-        brushState = BrushState.WAIT_FOR_COLOR;
+      else{
+        if(this.currentColor > color.colorVal && (this.currentColor - 3) <= color.colorVal){
+          this.spinSelectorCW();
+          System.out.println("cw");
+          countUp = false; //If turning clockwise then increment upwards at UPDATE
+          brushState = BrushState.WAIT_FOR_COLOR;
+        }
+        else{
+          this.spinSelectorCCW();
+          System.out.println("ccw");
+          countUp = true; //If turning counter-clockwise then increment downwards at UPDATE
+          brushState = BrushState.WAIT_FOR_COLOR;
+        }
       }
     break;
 
 
     //Waits for Paint Selector to reach desired color
     case WAIT_FOR_COLOR:
+      // System.out.println("current color wait for color" + this.currentColor);
       if(this.getSelectorSwitch() && !this.lastSwitchState){
         //Positive
         if(countUp){
@@ -167,7 +190,7 @@ public class Brush extends SubsystemBase {
             this.currentColor -= 1;
           }
         }
-        System.out.println("Last Switch State " + this.lastSwitchState);
+        //System.out.println("Last Switch State " + this.lastSwitchState);
       }
 
       if(this.currentColor == color.colorVal){
@@ -182,7 +205,7 @@ public class Brush extends SubsystemBase {
     //stops paint trigger motor, and resets the active color to none.
     //Returns to IDLE when finished
     case WAIT_FOR_PAINT:
-      System.out.println("WAITING FOR PAINTING TO FINISH");
+     // System.out.println("WAITING FOR PAINTING TO FINISH");
       if(brushTimer.get() - paintStartTime >= Constants.k_PaintingTime){ 
         this.triggerReset();
         //TODO: this.currentColor = Color.NONE.colorVal;
@@ -191,7 +214,7 @@ public class Brush extends SubsystemBase {
     break;
 
     case WAIT_FOR_RESET:
-      System.out.println("WAITING FOR RESET TO FINISH");
+      //System.out.println("WAITING FOR RESET TO FINISH");
       if(getTriggerBtn()){
         this.stopPainting();
         //TODO: this.currentColor = Color.NONE.colorVal;

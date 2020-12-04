@@ -32,23 +32,23 @@ public class Robot extends TimedRobot {
 
   //Enums for main state machine
   private enum MainState {
-    INIT, IDLE, SET_POSITIONS, WAIT_FOR_ALIGNMENT, UPDATE_BRUSH, WAIT_FOR_TIME
+    INIT, IDLE, SET_POSITIONS, WAIT_FOR_ALIGNMENT, UPDATE_BRUSH, WAIT_FOR_TIME, END
   }
 
-  private static MainState state, nextState;
-  private static Color currentColor;
+  private static MainState state, nextState, postWaitState;
+  private static Color previousColor, currentColor;
 
-  private int nextColor, wallLength, wallHeight;
-  private double startTime;
+  private int nextColor, wallLength, wallHeight, wallEnd;
+  private double startTime, delayTime;
   public static int currentPosition[] = new int[2];
   public static int nextPosition[] = new int[2];
   private boolean moveY, moveL, xAligned, yAligned, readyToPaint;
 
-  private final int[][] testGrid = { { 1, 3, 2, 4, 5 },
-    {1, 2, 1, 2, 1},
-    {2, 1, 2, 2, 3},
-    {1, 2, 1, 1, 2},
-    {2, 2, 3, 4, 1}}; 
+  private final int[][] testGrid = { { 5, 4, 3, 2, 1 },
+                                      {2, 1, 8, 7, 6},
+                                      {3, 4, 5, 6, 7},
+                                      {1, 2, 1, 1, 2},
+                                      {2, 2, 3, 4, 1}}; 
   
   private int _loops = 0;
 
@@ -84,15 +84,21 @@ public class Robot extends TimedRobot {
     yTrav.resetEnc();
     xTrav.resetEnc();
     state = MainState.INIT;
-    currentColor = Color.NONE;
+    currentColor = Color.RED;
 
     wallLength = testGrid[0].length;
     wallHeight = testGrid.length;
+    if (wallLength % 2 == 1){
+      wallEnd = wallLength - 1;
+    }
+    else{
+      wallEnd = 0;
+    }
   }
 
   @Override
   public void teleopPeriodic() {
-     if (++_loops >= 10) {
+     /*if (++_loops >= 10) {
 			_loops = 0;
       System.out.println("X Encoder Distance " + xTrav.getEncPosition());
       System.out.println("X Encoder Raw " + xTrav.EncX.getRaw());
@@ -101,24 +107,36 @@ public class Robot extends TimedRobot {
       // System.out.println("Y ToF Distance " + yTrav.getToFPosition());
       //  System.out.println("Paint Selector Limit " + brush.getSelectorSwitch());
       //  System.out.println("Paint Trigger Button " + brush.getTriggerBtn());
-      //  System.out.println("Current Color " + brush.currentColor);
-     }
-
-     xTrav.updatePositionValue();
-
+      System.out.println("Current Color " + currentColor);
+     }*/
+     // System.out.println("Current state " + Robot.state + " next state: " + nextState + " ready to paint: " + readyToPaint + " finished painting: " + Brush.finishedPainting);
+    xTrav.updatePositionValue();
+    //System.out.println("state: " + Robot.state + " next state: " + Robot.nextState);
     switch(Robot.state){
       case INIT:
+        System.out.println("main init");
         moveL = false;
-        moveY = false;
-        state = MainState.IDLE;
+        moveY = true;
+        readyToPaint = true;
+        previousColor = Color.RED;
+        nextState = MainState.IDLE;
+        currentColor = currentColor.set(this.testGrid[Robot.nextPosition[1]][Robot.nextPosition[0]]);
+        Robot.state = MainState.UPDATE_BRUSH;
       break;
 
       case IDLE:
         // if current x is at either end of the wall
         // iterate Y direction 
-
+        System.out.println("main init");
+        System.out.println("current position" + "x" + Robot.currentPosition[0] + " y " + Robot.currentPosition[1]);
+        
+        System.out.println("current color: " + currentColor);
         // make sure it goes to the side to start
-        if(Robot.currentPosition[0] == wallLength || Robot.currentPosition[0] == 0 && !moveY){
+        if (Robot.currentPosition[1] == wallHeight && Robot.currentPosition[0] == wallEnd){
+          Robot.state = MainState.END;
+          break;
+        }
+        if((Robot.currentPosition[0] == (wallLength - 1) || Robot.currentPosition[0] == 0) && !moveY){
           Robot.nextPosition[1] = Robot.currentPosition[1] + 1;
           moveY = true;
           
@@ -135,17 +153,20 @@ public class Robot extends TimedRobot {
             Robot.nextPosition[0] = Robot.currentPosition[0] + 1;
           }
           else{
-            Robot.nextPosition[0] = Robot.currentPosition[0] + 1;
+            Robot.nextPosition[0] = Robot.currentPosition[0] - 1;
           }
           moveY = false;
         }
+        System.out.println("nextposition" + "x" + Robot.nextPosition[0] + " y " + Robot.nextPosition[1]);
+        previousColor = currentColor;
+        currentColor = currentColor.set(this.testGrid[Robot.nextPosition[1]][Robot.nextPosition[0]]);
 
-        currentColor = currentColor.set(this.testGrid[Robot.nextPosition[0]][Robot.nextPosition[1]]);
         Robot.state = MainState.SET_POSITIONS;
       break;
 
       case SET_POSITIONS:
       //This one will need to be changed based on how were counting the distance, currently the encoder gets distance in inches
+        
         xTrav.setPositionClosedLoopSetpoint(Robot.nextPosition[0] * 1.5);
         startTime = timer.get();
         if(moveY){
@@ -171,9 +192,10 @@ public class Robot extends TimedRobot {
         }
 
         if(yAligned && xAligned){
-          readyToPaint = true;
+          
           nextState = MainState.IDLE;
-          state = MainState.UPDATE_BRUSH;
+          postWaitState = MainState.UPDATE_BRUSH;
+          state = MainState.WAIT_FOR_TIME;
           Robot.currentPosition = Robot.nextPosition;
         }
         else{
@@ -185,7 +207,8 @@ public class Robot extends TimedRobot {
       break;
 
       case UPDATE_BRUSH:
-        brush.update(currentColor, readyToPaint);
+        brush.update(previousColor, currentColor, readyToPaint);
+        // System.out.println(previousColor + "  " + currentColor);
         if(readyToPaint && !Brush.finishedPainting){
           state = MainState.UPDATE_BRUSH;
         }
@@ -196,6 +219,22 @@ public class Robot extends TimedRobot {
       break;
 
       case WAIT_FOR_TIME:
+        System.out.println("wait");
+        if(timer.get() > delayTime + 2) {
+          state = postWaitState;
+          readyToPaint = true;
+        }
+        else{
+          state = MainState.WAIT_FOR_TIME;
+        }
+      break;
+
+      case END:
+        if (++_loops >= 10) {
+          _loops = 0;
+          System.out.println("Done");
+        }
+        state = MainState.END;
       break;
     }
   }

@@ -38,8 +38,8 @@ public class X_Traversal extends SubsystemBase {
   public void configPID(){
     m_X.configNominalOutputForward(0, Constants.k_TimeoutMs);
     m_X.configNominalOutputReverse(0, Constants.k_TimeoutMs);
-    m_X.configPeakOutputForward(0.75, Constants.k_TimeoutMs);
-    m_X.configPeakOutputReverse(-0.75, Constants.k_TimeoutMs);
+    m_X.configPeakOutputForward(0.5, Constants.k_TimeoutMs);
+    m_X.configPeakOutputReverse(-0.5, Constants.k_TimeoutMs);
     
     //m_X.configAllowableClosedloopError(0, Constants.k_IDX, Constants.k_TimeoutMs);
 
