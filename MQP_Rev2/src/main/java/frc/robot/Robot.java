@@ -170,7 +170,7 @@ public class Robot extends TimedRobot {
         xTrav.setPositionClosedLoopSetpoint(Robot.nextPosition[0] * 1.5);
         startTime = timer.get();
         if(moveY){
-          yTrav.setSpeed(-1.0);
+          yTrav.setSpeed(1.0);
         }
         state = MainState.UPDATE_BRUSH;
         nextState = MainState.WAIT_FOR_ALIGNMENT;
