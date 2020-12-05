@@ -106,11 +106,12 @@ public class Robot extends TimedRobot {
       System.out.println("Y Encoder Distance " + yTrav.getEncPosition());
       // System.out.println("Y ToF Distance " + yTrav.getToFPosition());
       //  System.out.println("Paint Selector Limit " + brush.getSelectorSwitch());
-      
+      System.out.println("Paint Trigger Button " + brush.getTriggerBtn());
      }*/
 
-    System.out.println("Paint Trigger Button " + brush.getTriggerBtn());
-    System.out.println("Current Color " + currentColor);
+    System.out.println("Paint Selector Btn " + brush.getSelectorSwitch());
+    System.out.println("Desired Color " + currentColor);
+    System.out.println("Robot's Current Color " + brush.currentColor);
 
      // System.out.println("Current state " + Robot.state + " next state: " + nextState + " ready to paint: " + readyToPaint + " finished painting: " + Brush.finishedPainting);
     xTrav.updatePositionValue();
@@ -168,7 +169,7 @@ public class Robot extends TimedRobot {
       break;
 
       case SET_POSITIONS:
-        System.out.println("WAIT_FOR_ALIGNMENT");
+        // System.out.println("SET_POSITIONS");
         xTrav.setPositionClosedLoopSetpoint(Robot.nextPosition[0] * 1.5);
         startTime = timer.get();
         if(moveY){
@@ -179,10 +180,10 @@ public class Robot extends TimedRobot {
       break;
 
       case WAIT_FOR_ALIGNMENT:
-      if (++_loops >= 0) {
-        _loops = 0;
-        System.out.println("WAIT_FOR_ALIGNMENT");
-      }
+      // if (++_loops >= 0) {
+      //   _loops = 0;
+      //   System.out.println("WAIT_FOR_ALIGNMENT");
+      // }
         if(yTrav.atPosition()){
           yTrav.setSpeed(0.0);
           yAligned = true;
@@ -215,10 +216,10 @@ public class Robot extends TimedRobot {
       break;
 
       case UPDATE_BRUSH:
-        if (++_loops >= 0) {
-          _loops = 0;
-          System.out.println("UPDATE_BRUSH");
-        }
+        // if (++_loops >= 0) {
+        //   _loops = 0;
+        //   System.out.println("UPDATE_BRUSH");
+        // }
 
         if(readyToPaint && !Brush.finishedPainting){
           state = MainState.UPDATE_BRUSH;
@@ -231,10 +232,10 @@ public class Robot extends TimedRobot {
       break;
 
       case PAINT_DELAY:
-      if (++_loops >= 10) {
-        _loops = 0;
-        System.out.println("PAINT_DELAY");
-      }
+      // if (++_loops >= 10) {
+      //   _loops = 0;
+      //   System.out.println("PAINT_DELAY");
+      // }
         if(timer.get() - waitStartTime > waitTime)
         {
           state = postWaitState;
@@ -243,10 +244,10 @@ public class Robot extends TimedRobot {
       break;
 
       case END:
-        if (++_loops >= 10) {
-          _loops = 0;
-          System.out.println("END");
-        }
+        // if (++_loops >= 10) {
+        //   _loops = 0;
+        //   System.out.println("END");
+        // }
         state = MainState.END;
       break;
     }
