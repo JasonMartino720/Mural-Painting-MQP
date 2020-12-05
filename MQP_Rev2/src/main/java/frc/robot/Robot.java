@@ -32,7 +32,7 @@ public class Robot extends TimedRobot {
 
   //Enums for main state machine
   private enum MainState {
-    INIT, IDLE, SET_POSITIONS, WAIT_FOR_ALIGNMENT, UPDATE_BRUSH, WAIT_FOR_TIME, END
+    INIT, IDLE, SET_POSITIONS, WAIT_FOR_ALIGNMENT, UPDATE_BRUSH, PANT_DELAY, END
   }
 
   private static MainState state, nextState, postWaitState;
@@ -111,6 +111,7 @@ public class Robot extends TimedRobot {
      }*/
      // System.out.println("Current state " + Robot.state + " next state: " + nextState + " ready to paint: " + readyToPaint + " finished painting: " + Brush.finishedPainting);
     xTrav.updatePositionValue();
+    brush.update(previousColor, currentColor, readyToPaint);
     //System.out.println("state: " + Robot.state + " next state: " + Robot.nextState);
     switch(Robot.state){
       case INIT:
@@ -202,8 +203,7 @@ public class Robot extends TimedRobot {
           Robot.currentPosition = Robot.nextPosition;
           waitStartTime = timer.get();
           waitTime = 2.0;
-          readyToPaint = true;
-          state = MainState.WAIT_FOR_TIME;
+          state = MainState.PANT_DELAY;
         }
         else{
           readyToPaint = false;
@@ -214,7 +214,6 @@ public class Robot extends TimedRobot {
       break;
 
       case UPDATE_BRUSH:
-        brush.update(previousColor, currentColor, readyToPaint);
         // System.out.println(previousColor + "  " + currentColor);
         if(readyToPaint && !Brush.finishedPainting){
           state = MainState.UPDATE_BRUSH;
@@ -225,7 +224,7 @@ public class Robot extends TimedRobot {
         
       break;
 
-      case WAIT_FOR_TIME:
+      case PANT_DELAY:
       if (++_loops >= 10) {
         _loops = 0;
         System.out.println("Wait");
@@ -233,6 +232,7 @@ public class Robot extends TimedRobot {
         if(timer.get() - waitStartTime > waitTime)
         {
           state = postWaitState;
+          readyToPaint = true;
         }
       break;
 
