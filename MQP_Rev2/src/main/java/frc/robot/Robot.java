@@ -44,9 +44,9 @@ public class Robot extends TimedRobot {
   public static int nextPosition[] = new int[2];
   private boolean moveY, moveL, xAligned, yAligned, readyToPaint;
 
-  private final int[][] testGrid = { { 5, 4, 3, 2, 1 },
-                                      {2, 1, 8, 7, 6},
-                                      {3, 4, 5, 6, 7},
+  private final int[][] testGrid = { { 5, 3, 1, 7, 5 },
+                                      {3, 1, 7, 3, 5},
+                                      {3, 1, 7, 3, 5},
                                       {1, 2, 1, 1, 2},
                                       {2, 2, 3, 4, 1}}; 
   

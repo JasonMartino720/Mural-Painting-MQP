@@ -92,6 +92,7 @@ public class Brush extends SubsystemBase {
       }
       System.out.println("init");
       brushState = BrushState.IDLE;
+      this.lastSwitchState = true;
     break;
   
     case IDLE:
