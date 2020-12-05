@@ -84,7 +84,7 @@ public class Robot extends TimedRobot {
     yTrav.resetEnc();
     xTrav.resetEnc();
     state = MainState.INIT;
-    currentColor = Color.RED;
+    currentColor = Color.ORANGE;
     previousColor = currentColor;
     wallLength = testGrid[0].length;
     wallHeight = testGrid.length;
