@@ -138,7 +138,7 @@ public class Brush extends SubsystemBase {
     case SELECTING_COLOR:
       //Optimization to decide whether to turn right or left, pretty cool how simple it is
       System.out.println("current color: " + this.currentColor + " desired color: " + color.colorVal);
-      if(this.currentColor >= 4){
+      if(this.currentColor <= 4){
         if(color.colorVal <= (this.currentColor + 4) && color.colorVal > this.currentColor){
           this.spinSelectorCCW();
           System.out.println("ccw");
