@@ -100,7 +100,6 @@ public class Brush extends SubsystemBase {
       if(Brush.finishedPainting){
         Brush.finishedPainting = false;
       }
-      
 
       if (color.colorVal == this.currentColor && readyToPaint){
         brushState = BrushState.WAIT_FOR_TIME;

@@ -32,7 +32,7 @@ public class Robot extends TimedRobot {
 
   //Enums for main state machine
   private enum MainState {
-    INIT, IDLE, SET_POSITIONS, WAIT_FOR_ALIGNMENT, UPDATE_BRUSH, PANT_DELAY, END
+    INIT, IDLE, SET_POSITIONS, WAIT_FOR_ALIGNMENT, UPDATE_BRUSH, PAINT_DELAY, END
   }
 
   private static MainState state, nextState, postWaitState;
@@ -131,11 +131,6 @@ public class Robot extends TimedRobot {
         System.out.println("IDLE");
         System.out.println("current position" + "x" + Robot.currentPosition[0] + " y " + Robot.currentPosition[1]);
         System.out.println("current color: " + currentColor);
-
-        if(readyToPaint){
-          readyToPaint = false;
-        }
-
         // make sure it goes to the side to start
         if (Robot.currentPosition[1] == wallHeight && Robot.currentPosition[0] == wallEnd){
           Robot.state = MainState.END;
@@ -203,7 +198,7 @@ public class Robot extends TimedRobot {
           Robot.currentPosition = Robot.nextPosition;
           waitStartTime = timer.get();
           waitTime = 2.0;
-          state = MainState.PANT_DELAY;
+          state = MainState.PAINT_DELAY;
         }
         else{
           readyToPaint = false;
@@ -220,11 +215,12 @@ public class Robot extends TimedRobot {
         }
         else{ 
           state = nextState;
+          readyToPaint = false;
         }
         
       break;
 
-      case PANT_DELAY:
+      case PAINT_DELAY:
       if (++_loops >= 10) {
         _loops = 0;
         System.out.println("Wait");
