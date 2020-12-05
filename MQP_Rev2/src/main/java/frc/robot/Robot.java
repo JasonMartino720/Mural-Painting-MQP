@@ -39,7 +39,7 @@ public class Robot extends TimedRobot {
   private static Color previousColor, currentColor;
 
   private int nextColor, wallLength, wallHeight, wallEnd;
-  private double startTime, delayTime;
+  private double startTime, delayTime, waitStartTime, waitTime;
   public static int currentPosition[] = new int[2];
   public static int nextPosition[] = new int[2];
   private boolean moveY, moveL, xAligned, yAligned, readyToPaint;
@@ -197,6 +197,8 @@ public class Robot extends TimedRobot {
           postWaitState = MainState.UPDATE_BRUSH;
           state = MainState.WAIT_FOR_TIME;
           Robot.currentPosition = Robot.nextPosition;
+          waitStartTime = timer.get();
+          waitTime = 2.0;
         }
         else{
           readyToPaint = false;
@@ -220,12 +222,9 @@ public class Robot extends TimedRobot {
 
       case WAIT_FOR_TIME:
         System.out.println("wait");
-        if(timer.get() > delayTime + 2) {
+        if(timer.get() - waitStartTime > waitTime)
+        {
           state = postWaitState;
-          readyToPaint = true;
-        }
-        else{
-          state = MainState.WAIT_FOR_TIME;
         }
       break;
 
