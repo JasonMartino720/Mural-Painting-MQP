@@ -172,7 +172,8 @@ public class Robot extends TimedRobot {
         if(moveY){
           yTrav.setSpeed(-1.0);
         }
-        state = MainState.WAIT_FOR_ALIGNMENT;
+        state = MainState.UPDATE_BRUSH;
+        nextState = MainState.WAIT_FOR_ALIGNMENT;
       break;
 
       case WAIT_FOR_ALIGNMENT:
