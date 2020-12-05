@@ -165,8 +165,7 @@ public class Robot extends TimedRobot {
       break;
 
       case SET_POSITIONS:
-      //This one will need to be changed based on how were counting the distance, currently the encoder gets distance in inches
-        
+        System.out.println("WAIT_FOR_ALIGNMENT");
         xTrav.setPositionClosedLoopSetpoint(Robot.nextPosition[0] * 1.5);
         startTime = timer.get();
         if(moveY){
@@ -177,6 +176,10 @@ public class Robot extends TimedRobot {
       break;
 
       case WAIT_FOR_ALIGNMENT:
+      if (++_loops >= 0) {
+        _loops = 0;
+        System.out.println("WAIT_FOR_ALIGNMENT");
+      }
         if(yTrav.atPosition()){
           yTrav.setSpeed(0.0);
           yAligned = true;
@@ -209,7 +212,11 @@ public class Robot extends TimedRobot {
       break;
 
       case UPDATE_BRUSH:
-        // System.out.println(previousColor + "  " + currentColor);
+        if (++_loops >= 0) {
+          _loops = 0;
+          System.out.println("UPDATE_BRUSH");
+        }
+
         if(readyToPaint && !Brush.finishedPainting){
           state = MainState.UPDATE_BRUSH;
         }
@@ -223,7 +230,7 @@ public class Robot extends TimedRobot {
       case PAINT_DELAY:
       if (++_loops >= 10) {
         _loops = 0;
-        System.out.println("Wait");
+        System.out.println("PAINT_DELAY");
       }
         if(timer.get() - waitStartTime > waitTime)
         {
@@ -235,7 +242,7 @@ public class Robot extends TimedRobot {
       case END:
         if (++_loops >= 10) {
           _loops = 0;
-          System.out.println("Done");
+          System.out.println("END");
         }
         state = MainState.END;
       break;
