@@ -114,7 +114,7 @@ public class Robot extends TimedRobot {
     //System.out.println("state: " + Robot.state + " next state: " + Robot.nextState);
     switch(Robot.state){
       case INIT:
-        System.out.println("main init");
+        System.out.println("INIT");
         moveL = false;
         moveY = true;
         readyToPaint = true;
@@ -127,10 +127,14 @@ public class Robot extends TimedRobot {
       case IDLE:
         // if current x is at either end of the wall
         // iterate Y direction 
-        System.out.println("main init");
+        System.out.println("IDLE");
         System.out.println("current position" + "x" + Robot.currentPosition[0] + " y " + Robot.currentPosition[1]);
-        
         System.out.println("current color: " + currentColor);
+
+        if(readyToPaint){
+          readyToPaint = false;
+        }
+
         // make sure it goes to the side to start
         if (Robot.currentPosition[1] == wallHeight && Robot.currentPosition[0] == wallEnd){
           Robot.state = MainState.END;
@@ -222,7 +226,10 @@ public class Robot extends TimedRobot {
       break;
 
       case WAIT_FOR_TIME:
-        System.out.println("wait");
+      if (++_loops >= 10) {
+        _loops = 0;
+        System.out.println("Wait");
+      }
         if(timer.get() - waitStartTime > waitTime)
         {
           state = postWaitState;
