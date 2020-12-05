@@ -193,13 +193,13 @@ public class Robot extends TimedRobot {
         }
 
         if(yAligned && xAligned){
-          
           nextState = MainState.IDLE;
           postWaitState = MainState.UPDATE_BRUSH;
-          state = MainState.WAIT_FOR_TIME;
           Robot.currentPosition = Robot.nextPosition;
           waitStartTime = timer.get();
           waitTime = 2.0;
+          readyToPaint = true;
+          state = MainState.WAIT_FOR_TIME;
         }
         else{
           readyToPaint = false;
