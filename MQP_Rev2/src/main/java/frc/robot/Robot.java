@@ -85,7 +85,7 @@ public class Robot extends TimedRobot {
     xTrav.resetEnc();
     state = MainState.INIT;
     currentColor = Color.RED;
-
+    previousColor = currentColor;
     wallLength = testGrid[0].length;
     wallHeight = testGrid.length;
     if (wallLength % 2 == 1){
@@ -119,7 +119,7 @@ public class Robot extends TimedRobot {
         moveL = false;
         moveY = true;
         readyToPaint = true;
-        previousColor = Color.RED;
+        
         nextState = MainState.IDLE;
         currentColor = currentColor.set(this.testGrid[Robot.nextPosition[1]][Robot.nextPosition[0]]);
         Robot.state = MainState.UPDATE_BRUSH;
