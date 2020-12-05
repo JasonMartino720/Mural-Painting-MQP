@@ -106,9 +106,12 @@ public class Robot extends TimedRobot {
       System.out.println("Y Encoder Distance " + yTrav.getEncPosition());
       // System.out.println("Y ToF Distance " + yTrav.getToFPosition());
       //  System.out.println("Paint Selector Limit " + brush.getSelectorSwitch());
-      //  System.out.println("Paint Trigger Button " + brush.getTriggerBtn());
-      System.out.println("Current Color " + currentColor);
+      
      }*/
+
+    System.out.println("Paint Trigger Button " + brush.getTriggerBtn());
+    System.out.println("Current Color " + currentColor);
+
      // System.out.println("Current state " + Robot.state + " next state: " + nextState + " ready to paint: " + readyToPaint + " finished painting: " + Brush.finishedPainting);
     xTrav.updatePositionValue();
     brush.update(previousColor, currentColor, readyToPaint);
