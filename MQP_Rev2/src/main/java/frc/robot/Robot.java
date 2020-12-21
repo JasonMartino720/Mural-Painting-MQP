@@ -8,7 +8,11 @@
 package frc.robot;
 
 import javax.lang.model.util.ElementScanner6;
+
+import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -86,6 +90,37 @@ private final int[][] moveUp = {{1},
 
 
   private int _loops = 0;
+
+  //Trying to import the file with file reader, read line by line with buffered reader
+  public static int[][] importCSV(String file)
+  {
+    String line = "";
+    String splitBy = ",";
+    int[][] returnArray = {};
+
+    try{
+      BufferedReader bReader = new BufferedReader(new FileReader(file));
+      ////This for loop iterates the row and stops when its out of rows to read
+      for(int rowNum=0; ((line = bReader.readLine()) != null); rowNum++)
+      {
+          //This splits by the commas and returns an array of the number of items it found commma seperated
+          String[] rowString = (line.split(splitBy));
+          
+          //This loop goes through the String Array for each line and parses the int out and hopefully places it in the right spot in the return Array
+          for(int i=0; i != rowString.length; i++){
+            int currInt = Integer.parseInt(rowString[i]);
+            //I don't really think you can append to int[][] in the general sense but I think this will work as a substitute
+            returnArray[rowNum][i] = currInt;
+          }  
+      }
+    }
+    catch(IOException e)
+    {
+      e.printStackTrace();
+    }
+    //Return array once buffered reader picks up null pretty much
+    return returnArray;
+  }
 
   /*public static void readDataLineByLine(String file) 
     { 
