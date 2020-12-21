@@ -8,13 +8,13 @@
 package frc.robot;
 
 import javax.lang.model.util.ElementScanner6;
-
+import java.io.FileReader;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.Subsystems.*;
 import edu.wpi.first.wpilibj.Timer;
-
+//import com.opencsv.*; 
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the TimedRobot
@@ -29,7 +29,7 @@ public class Robot extends TimedRobot {
   private final Brush brush = new Brush();
   private final DigitalInput btn = new DigitalInput(Constants.k_VexBtnPort);
   private final Timer timer = new Timer();
-
+  private static final String CSV_FILE_PATH = "C:\\murals\\moodswing_mural.csv";
   //Enums for main state machine
   private enum MainState {
     INIT, IDLE, SET_POSITIONS, WAIT_FOR_ALIGNMENT, UPDATE_BRUSH, PAINT_DELAY, END
@@ -43,14 +43,83 @@ public class Robot extends TimedRobot {
   public static int currentPosition[] = new int[2];
   public static int nextPosition[] = new int[2];
   private boolean moveY, moveL, xAligned, yAligned, readyToPaint;
+  private int[][] teleopGrid;
+  private final int[][] testGrid = {  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                                      {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                                      {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                                      {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                                      {0,0,0,0,0,5,5,5,5,0,0,0,0,0,0,5,5,5,5,0,0,0,0,0},
+                                      {0,0,0,0,5,5,5,5,5,5,0,0,0,0,5,5,5,5,5,5,0,0,0,0},
+                                      {0,0,0,0,5,5,5,5,5,5,0,0,0,0,5,5,5,5,5,5,0,0,0,0},
+                                      {0,0,0,0,5,5,5,5,5,5,0,0,0,0,5,5,5,5,5,5,0,0,0,0},
+                                      {0,0,0,0,5,5,5,5,5,5,0,0,0,0,5,5,5,5,5,5,0,0,0,0},
+                                      {0,0,0,0,0,5,5,5,5,0,0,0,0,0,0,5,5,5,5,0,0,0,0,0},
+                                      {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                                      {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                                      {0,0,0,5,5,5,5,0,0,0,0,0,0,0,0,0,0,5,5,5,5,0,0,0},
+                                      {0,0,0,5,5,5,5,0,0,0,0,0,0,0,0,0,0,5,5,5,5,0,0,0},
+                                      {0,0,0,0,0,5,5,5,5,5,0,0,0,0,5,5,5,5,5,0,0,0,0,0},
+                                      {0,0,0,0,0,5,5,5,5,5,0,0,0,0,5,5,5,5,5,0,0,0,0,0},
+                                      {0,0,0,0,0,0,0,0,5,5,5,5,5,5,5,5,0,0,0,0,0,0,0,0},
+                                      {0,0,0,0,0,0,0,0,5,5,5,5,5,5,5,5,0,0,0,0,0,0,0,0},
+                                      {0,0,0,0,0,5,5,5,5,5,0,0,0,0,5,5,5,5,5,0,0,0,0,0},
+                                      {0,0,0,0,0,5,5,5,5,5,0,0,0,0,5,5,5,5,5,0,0,0,0,0},
+                                      {0,0,0,5,5,5,5,0,0,0,0,0,0,0,0,0,0,5,5,5,5,0,0,0},
+                                      {0,0,0,5,5,5,5,0,0,0,0,0,0,0,0,0,0,5,5,5,5,0,0,0},
+                                      {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                                      {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
 
-  private final int[][] testGrid = { { 5, 3, 1, 7, 5 },
-                                      {3, 1, 7, 3, 5},
-                                      {3, 1, 7, 3, 5},
-                                      {1, 2, 1, 1, 2},
-                                      {2, 2, 3, 4, 1}}; 
+  private final int[][] paintGrid = {{1, 1, 1, 1, 1},
+                                     {1, 1, 1, 1, 1},
+                                     {1, 1, 1, 1, 1},
+                                     {1, 1, 1, 1, 1},
+                                     {1, 1, 1, 1, 1}}; 
   
+private final int[][] moveUp = {{1},
+                                {1},
+                                {1},
+                                {1},
+                                {1},
+                                {1},
+                                {1},
+                                {1},};
+
+
   private int _loops = 0;
+
+  /*public static void readDataLineByLine(String file) 
+    { 
+  
+        try { 
+            int i = 0;
+            int[][] data = new int[0][];
+            // Create an object of filereader class 
+            // with CSV file as a parameter. 
+            FileReader filereader = new FileReader(file); 
+  
+            // create csvReader object passing 
+            // filereader as parameter 
+            CSVReader csvReader = new CSVReader(filereader); 
+            int[] nextRecord; 
+  
+            // we are going to read data line by line 
+            while ((nextRecord = csvReader.readNext()) != null) { 
+              ++i;  
+
+              int[][] newdata = new int[i][];
+              int strar[] = nextRecord.split(",");
+              newdata[i-1] = strar;
+              System.arraycopy(data, 0, newdata, 0, i-1);
+              for (int cell : nextRecord) { 
+                    System.out.print(cell + "\t"); 
+                } 
+                System.out.println(); 
+            } 
+        } 
+        catch (Exception e) { 
+            e.printStackTrace(); 
+        } 
+    }*/
 
   @Override
   public void robotInit() {
@@ -83,11 +152,13 @@ public class Robot extends TimedRobot {
     timer.start();
     yTrav.resetEnc();
     xTrav.resetEnc();
+    //teleopGrid = readDataLineByLine(CSV_FILE_PATH);
+    teleopGrid = moveUp;
     state = MainState.INIT;
     currentColor = Color.ORANGE;
     previousColor = currentColor;
-    wallLength = testGrid[0].length;
-    wallHeight = testGrid.length;
+    wallLength = teleopGrid[0].length;
+    wallHeight = teleopGrid.length;
     if (wallLength % 2 == 1){
       wallEnd = wallLength - 1;
     }
@@ -121,11 +192,11 @@ public class Robot extends TimedRobot {
       case INIT:
         System.out.println("INIT");
         moveL = false;
-        moveY = true;
+        moveY = false;
         readyToPaint = true;
         
         nextState = MainState.IDLE;
-        currentColor = currentColor.set(this.testGrid[Robot.nextPosition[1]][Robot.nextPosition[0]]);
+        currentColor = currentColor.set(this.teleopGrid[Robot.nextPosition[1]][Robot.nextPosition[0]]);
         Robot.state = MainState.UPDATE_BRUSH;
       break;
 
@@ -155,21 +226,27 @@ public class Robot extends TimedRobot {
         else{
           if(!moveL){
             Robot.nextPosition[0] = Robot.currentPosition[0] + 1;
+            System.out.println("next position" + Robot.nextPosition);
           }
           else{
             Robot.nextPosition[0] = Robot.currentPosition[0] - 1;
+            System.out.println("next position" + Robot.nextPosition);
           }
           moveY = false;
         }
         System.out.println("nextposition" + "x" + Robot.nextPosition[0] + " y " + Robot.nextPosition[1]);
         previousColor = currentColor;
-        currentColor = currentColor.set(this.testGrid[Robot.nextPosition[1]][Robot.nextPosition[0]]);
-
-        Robot.state = MainState.SET_POSITIONS;
+        currentColor = currentColor.set(this.teleopGrid[Robot.nextPosition[1]][Robot.nextPosition[0]]);
+        if(currentColor == Color.NONE){
+          Robot.state = MainState.IDLE;
+        }
+        else{
+          Robot.state = MainState.SET_POSITIONS;
+        } 
       break;
 
       case SET_POSITIONS:
-        // System.out.println("SET_POSITIONS");
+         System.out.println("SET_POSITIONS");
         xTrav.setPositionClosedLoopSetpoint(Robot.nextPosition[0] * 1.5);
         startTime = timer.get();
         if(moveY){
@@ -180,10 +257,10 @@ public class Robot extends TimedRobot {
       break;
 
       case WAIT_FOR_ALIGNMENT:
-      // if (++_loops >= 0) {
-      //   _loops = 0;
-      //   System.out.println("WAIT_FOR_ALIGNMENT");
-      // }
+       if (++_loops >= 0) {
+         _loops = 0;
+         System.out.println("WAIT_FOR_ALIGNMENT");
+       }
         if(yTrav.atPosition()){
           yTrav.setSpeed(0.0);
           yAligned = true;
@@ -204,7 +281,7 @@ public class Robot extends TimedRobot {
           postWaitState = MainState.UPDATE_BRUSH;
           Robot.currentPosition = Robot.nextPosition;
           waitStartTime = timer.get();
-          waitTime = 2.0;
+          waitTime = 4.0;
           state = MainState.PAINT_DELAY;
         }
         else{
@@ -216,10 +293,10 @@ public class Robot extends TimedRobot {
       break;
 
       case UPDATE_BRUSH:
-        // if (++_loops >= 0) {
-        //   _loops = 0;
-        //   System.out.println("UPDATE_BRUSH");
-        // }
+         if (++_loops >= 0) {
+           _loops = 0;
+           System.out.println("UPDATE_BRUSH");
+         }
 
         if(readyToPaint && !Brush.finishedPainting){
           state = MainState.UPDATE_BRUSH;
@@ -232,10 +309,10 @@ public class Robot extends TimedRobot {
       break;
 
       case PAINT_DELAY:
-      // if (++_loops >= 10) {
-      //   _loops = 0;
-      //   System.out.println("PAINT_DELAY");
-      // }
+       if (++_loops >= 10) {
+         _loops = 0;
+         System.out.println("PAINT_DELAY");
+       }
         if(timer.get() - waitStartTime > waitTime)
         {
           state = postWaitState;

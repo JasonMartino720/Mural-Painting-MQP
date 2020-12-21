@@ -214,9 +214,11 @@ public class Brush extends SubsystemBase {
     break;
 
     case WAIT_FOR_RESET:
-      //System.out.println("WAITING FOR RESET TO FINISH");
+      System.out.println("WAITING FOR RESET TO FINISH");
+      System.out.println(getTriggerBtn());
       if(getTriggerBtn()){
         this.stopPainting();
+
         //TODO: this.currentColor = Color.NONE.colorVal;
         brushState = BrushState.IDLE;
         Brush.finishedPainting = true;

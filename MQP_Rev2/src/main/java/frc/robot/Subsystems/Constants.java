@@ -33,9 +33,9 @@ public class Constants {
     public static final int k_IDX = 0;
     public static final int k_TimeoutMs = 0;
 
-    public static final double k_xP = 4.0;
+    public static final double k_xP = 7.0;
     public static final double k_xI = 0.0;
-    public static final double k_xD = 0.0;
+    public static final double k_xD = 3.0;
     public static final double k_xF = 0.0; 
     
 // ----Y-Traversal--------------------------------------------------------------
@@ -46,7 +46,7 @@ public class Constants {
     public static final int k_EncYPort1 = 2;
     public static final int k_EncYPort2 = 3;
         //Encoder conversion factor in inches per pulse
-        public static final float k_EncYConversion = 0.00041024f; 
+        public static final float k_EncYConversion = 0.00045024f; 
         //Encoder min rate in X direction
         public static final double k_EncYMinRate = 0.125; 
         //Encoder is reversed or not
@@ -69,7 +69,7 @@ public class Constants {
         //Speed for painting 
         public static final double k_PaintTriggerSpeed = 1.0;
         //Static times for paint and reset 
-        public static final double k_PaintingTime = 0.35; //In Seconds
+        public static final double k_PaintingTime = 0.6; //In Seconds
         public static final double k_ResetTime = 0.1; //In Seconds
         //Paint Trigger Button
         public static final int k_PaintTriggerBtnPort = 6;

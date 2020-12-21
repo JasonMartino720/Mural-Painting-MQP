@@ -11,7 +11,7 @@ package frc.robot.Subsystems;
  * Add your docs here.
  */
 public enum Color{
-    NONE(69),
+    NONE(0),
     ORANGE(1), 
     BLUE(2), 
     WHITE(3),
