@@ -35,7 +35,7 @@ public class Constants {
 
     public static final double k_xP = 7.0;
     public static final double k_xI = 0.0;
-    public static final double k_xD = 3.0;
+    public static final double k_xD = 2.0;
     public static final double k_xF = 0.0; 
     
 // ----Y-Traversal--------------------------------------------------------------

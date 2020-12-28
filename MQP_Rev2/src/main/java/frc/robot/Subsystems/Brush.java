@@ -107,7 +107,7 @@ public class Brush extends SubsystemBase {
         this.waitTime = 0.25;
         nextBrushState = BrushState.PAINTING;
       }
-      else if (color.colorVal != this.currentColor){
+      else if (color.colorVal != this.currentColor && color.colorVal != 0){
         brushState = BrushState.SELECTING_COLOR;
       }    
       else
@@ -136,17 +136,17 @@ public class Brush extends SubsystemBase {
     //Sets state to WAIT_FOR_COLOR when finished 
     case SELECTING_COLOR:
       //Optimization to decide whether to turn right or left, pretty cool how simple it is
-      System.out.println("current color: " + this.currentColor + " desired color: " + color.colorVal);
+      //System.out.println("current color: " + this.currentColor + " desired color: " + color.colorVal);
       if(this.currentColor <= 4){
         if(color.colorVal <= (this.currentColor + 4) && color.colorVal > this.currentColor){
           this.spinSelectorCCW();
-          System.out.println("ccw");
+          //System.out.println("ccw");
           countUp = true; //If turning counter-clockwise then increment downwards at UPDATE
           brushState = BrushState.WAIT_FOR_COLOR;
         }
         else{
           this.spinSelectorCW();
-          System.out.println("cw");
+          //System.out.println("cw");
           countUp = false; //If turning clockwise then increment upwards at UPDATE
           brushState = BrushState.WAIT_FOR_COLOR;
         }
@@ -154,13 +154,13 @@ public class Brush extends SubsystemBase {
       else{
         if(this.currentColor > color.colorVal && (this.currentColor - 3) <= color.colorVal){
           this.spinSelectorCW();
-          System.out.println("cw");
+          //System.out.println("cw");
           countUp = false; //If turning clockwise then increment upwards at UPDATE
           brushState = BrushState.WAIT_FOR_COLOR;
         }
         else{
           this.spinSelectorCCW();
-          System.out.println("ccw");
+          //System.out.println("ccw");
           countUp = true; //If turning counter-clockwise then increment downwards at UPDATE
           brushState = BrushState.WAIT_FOR_COLOR;
         }
@@ -214,8 +214,8 @@ public class Brush extends SubsystemBase {
     break;
 
     case WAIT_FOR_RESET:
-      System.out.println("WAITING FOR RESET TO FINISH");
-      System.out.println(getTriggerBtn());
+      //System.out.println("WAITING FOR RESET TO FINISH");
+      //System.out.println(getTriggerBtn());
       if(getTriggerBtn()){
         this.stopPainting();
 

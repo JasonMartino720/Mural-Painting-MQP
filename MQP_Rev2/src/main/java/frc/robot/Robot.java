@@ -33,7 +33,7 @@ public class Robot extends TimedRobot {
   private final Brush brush = new Brush();
   private final DigitalInput btn = new DigitalInput(Constants.k_VexBtnPort);
   private final Timer timer = new Timer();
-  private static final String CSV_FILE_PATH = "C:\\murals\\moodswing_mural.csv";
+  private static final String CSV_FILE_PATH = "C:\\murals\\small_mural.csv";
   //Enums for main state machine
   private enum MainState {
     INIT, IDLE, SET_POSITIONS, WAIT_FOR_ALIGNMENT, UPDATE_BRUSH, PAINT_DELAY, END
@@ -73,11 +73,19 @@ public class Robot extends TimedRobot {
                                       {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
                                       {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
 
-  private final int[][] paintGrid = {{1, 1, 1, 1, 1},
-                                     {1, 1, 1, 1, 1},
-                                     {1, 1, 1, 1, 1},
-                                     {1, 1, 1, 1, 1},
-                                     {1, 1, 1, 1, 1}}; 
+  private final int[][] paintGrid = {{1,1,1,1,1,1,1,1,1,1},
+                                     {1,1,0,1,0,0,0,1,0,1},
+                                     {1,0,1,0,0,0,1,1,1,1},
+                                     {1,1,0,1,0,0,0,1,0,1},
+                                     {1,0,0,0,0,0,0,0,0,1},
+                                     {1,0,0,0,0,0,0,0,0,1},
+                                     {1,1,1,0,0,0,0,1,1,1},
+                                     {1,0,1,1,0,0,1,1,0,1},
+                                     {1,0,0,1,1,1,1,0,0,1},
+                                     {1,1,1,1,1,1,1,1,1,1},
+                                     {1,0,1,1,0,0,1,1,0,1},
+                                     {1,1,1,0,0,0,0,1,1,1},
+                                     {1,1,1,1,1,1,1,1,1,1}}; 
   
 private final int[][] moveUp = {{1},
                                 {1},
@@ -187,13 +195,14 @@ private final int[][] moveUp = {{1},
     timer.start();
     yTrav.resetEnc();
     xTrav.resetEnc();
-    //teleopGrid = readDataLineByLine(CSV_FILE_PATH);
-    teleopGrid = moveUp;
+    //teleopGrid = importCSV(CSV_FILE_PATH);
+    //System.out.println(teleopGrid);
+    teleopGrid = paintGrid;
     state = MainState.INIT;
     currentColor = Color.ORANGE;
     previousColor = currentColor;
     wallLength = teleopGrid[0].length;
-    wallHeight = teleopGrid.length;
+    wallHeight = teleopGrid.length - 1;
     if (wallLength % 2 == 1){
       wallEnd = wallLength - 1;
     }
@@ -215,9 +224,9 @@ private final int[][] moveUp = {{1},
       System.out.println("Paint Trigger Button " + brush.getTriggerBtn());
      }*/
 
-    System.out.println("Paint Selector Btn " + brush.getSelectorSwitch());
-    System.out.println("Desired Color " + currentColor);
-    System.out.println("Robot's Current Color " + brush.currentColor);
+    //System.out.println("Paint Selector Btn " + brush.getSelectorSwitch());
+    //System.out.println("Desired Color " + currentColor);
+    //ystem.out.println("Robot's Current Color " + brush.currentColor);
 
      // System.out.println("Current state " + Robot.state + " next state: " + nextState + " ready to paint: " + readyToPaint + " finished painting: " + Brush.finishedPainting);
     xTrav.updatePositionValue();
@@ -227,12 +236,20 @@ private final int[][] moveUp = {{1},
       case INIT:
         System.out.println("INIT");
         moveL = false;
-        moveY = false;
+        moveY = true;
         readyToPaint = true;
         
         nextState = MainState.IDLE;
         currentColor = currentColor.set(this.teleopGrid[Robot.nextPosition[1]][Robot.nextPosition[0]]);
-        Robot.state = MainState.UPDATE_BRUSH;
+        if(currentColor == Color.NONE){
+          Robot.state = MainState.IDLE;
+          //System.out.println("none");
+        }
+        else{
+          //System.out.println("i don't know why its here 3");
+          Robot.state = MainState.UPDATE_BRUSH;
+          //System.out.println("update brush");
+        } 
       break;
 
       case IDLE:
@@ -261,40 +278,56 @@ private final int[][] moveUp = {{1},
         else{
           if(!moveL){
             Robot.nextPosition[0] = Robot.currentPosition[0] + 1;
-            System.out.println("next position" + Robot.nextPosition);
+            //System.out.println("next position" + Robot.nextPosition);
           }
           else{
             Robot.nextPosition[0] = Robot.currentPosition[0] - 1;
-            System.out.println("next position" + Robot.nextPosition);
+            //System.out.println("next position" + Robot.nextPosition);
           }
           moveY = false;
         }
         System.out.println("nextposition" + "x" + Robot.nextPosition[0] + " y " + Robot.nextPosition[1]);
         previousColor = currentColor;
         currentColor = currentColor.set(this.teleopGrid[Robot.nextPosition[1]][Robot.nextPosition[0]]);
-        if(currentColor == Color.NONE){
-          Robot.state = MainState.IDLE;
+        if(currentColor == Color.NONE && moveY){
+          Robot.state = MainState.SET_POSITIONS;          
+          Robot.currentPosition = Robot.nextPosition;
         }
+        else if(currentColor == Color.NONE){
+          Robot.state = MainState.IDLE;
+          Robot.currentPosition = Robot.nextPosition;
+        } 
         else{
           Robot.state = MainState.SET_POSITIONS;
-        } 
+        }
       break;
 
       case SET_POSITIONS:
-         System.out.println("SET_POSITIONS");
+        //System.out.println("SET_POSITIONS");
+        
         xTrav.setPositionClosedLoopSetpoint(Robot.nextPosition[0] * 1.5);
+        
         startTime = timer.get();
-        if(moveY){
-          yTrav.setSpeed(1.0);
+        if(!yTrav.atPosition()){
+          yTrav.setSpeed(-1.0);
         }
-        state = MainState.UPDATE_BRUSH;
-        nextState = MainState.WAIT_FOR_ALIGNMENT;
+        if(currentColor == Color.NONE){
+          //System.out.println("color is none");
+          state = MainState.WAIT_FOR_ALIGNMENT;
+        }
+        else{
+          //System.out.println("color isn't none");
+          //System.out.println("i don't know why its here 2");
+          state = MainState.UPDATE_BRUSH;
+          nextState = MainState.WAIT_FOR_ALIGNMENT;
+        }
+        
       break;
 
       case WAIT_FOR_ALIGNMENT:
        if (++_loops >= 0) {
          _loops = 0;
-         System.out.println("WAIT_FOR_ALIGNMENT");
+         //System.out.println("WAIT_FOR_ALIGNMENT");
        }
         if(yTrav.atPosition()){
           yTrav.setSpeed(0.0);
@@ -305,32 +338,45 @@ private final int[][] moveUp = {{1},
         }
 
         if(xTrav.atPosition()){
+          //System.out.println("x true");
           xAligned = true;
         }
         else {
+          //System.out.println("x false");
           xAligned = false;
         }
 
-        if(yAligned && xAligned){
+        if(yAligned && xAligned && currentColor != Color.NONE){
           nextState = MainState.IDLE;
+          System.out.println("i don't know why its here 1");
           postWaitState = MainState.UPDATE_BRUSH;
           Robot.currentPosition = Robot.nextPosition;
           waitStartTime = timer.get();
           waitTime = 4.0;
           state = MainState.PAINT_DELAY;
         }
-        else{
+        else if( yAligned && xAligned && currentColor == Color.NONE){
+          state = MainState.IDLE;
+        }
+        else if (currentColor != Color.NONE){
           readyToPaint = false;
+          //System.out.println("i don't know why its here");
           nextState = MainState.WAIT_FOR_ALIGNMENT;
           state = MainState.UPDATE_BRUSH;
+        
+        }
+        else{
+          readyToPaint = false;
+          state = MainState.WAIT_FOR_ALIGNMENT;
         }
         
       break;
 
       case UPDATE_BRUSH:
+        //System.out.println("UPDATE_BRUSH");
          if (++_loops >= 0) {
            _loops = 0;
-           System.out.println("UPDATE_BRUSH");
+           
          }
 
         if(readyToPaint && !Brush.finishedPainting){
@@ -346,7 +392,7 @@ private final int[][] moveUp = {{1},
       case PAINT_DELAY:
        if (++_loops >= 10) {
          _loops = 0;
-         System.out.println("PAINT_DELAY");
+         //System.out.println("PAINT_DELAY");
        }
         if(timer.get() - waitStartTime > waitTime)
         {
@@ -356,10 +402,10 @@ private final int[][] moveUp = {{1},
       break;
 
       case END:
-        // if (++_loops >= 10) {
-        //   _loops = 0;
-        //   System.out.println("END");
-        // }
+         if (++_loops >= 10) {
+           _loops = 0;
+           System.out.println("END");
+         }
         state = MainState.END;
       break;
     }
