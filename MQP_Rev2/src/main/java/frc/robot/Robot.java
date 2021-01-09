@@ -33,7 +33,7 @@ public class Robot extends TimedRobot {
   private final Brush brush = new Brush();
   private final DigitalInput btn = new DigitalInput(Constants.k_VexBtnPort);
   private final Timer timer = new Timer();
-  private static final String CSV_FILE_PATH = "C:\\murals\\small_mural.csv";
+  private static final String CSV_FILE_PATH = "src\\main\\java\\frc\\robot\\murals\\small_mural.csv";
   //Enums for main state machine
   private enum MainState {
     INIT, IDLE, SET_POSITIONS, WAIT_FOR_ALIGNMENT, UPDATE_BRUSH, PAINT_DELAY, END
@@ -74,20 +74,19 @@ public class Robot extends TimedRobot {
                                       {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
 
   private final int[][] paintGrid = {{1,1,1,1,1,1,1,1,1,1},
-                                     {1,1,0,1,0,0,0,1,0,1},
-                                     {1,0,1,0,0,0,1,1,1,1},
-                                     {1,1,0,1,0,0,0,1,0,1},
-                                     {1,0,0,0,0,0,0,0,0,1},
-                                     {1,0,0,0,0,0,0,0,0,1},
-                                     {1,1,1,0,0,0,0,1,1,1},
-                                     {1,0,1,1,0,0,1,1,0,1},
-                                     {1,0,0,1,1,1,1,0,0,1},
+                                     {1,1,2,1,2,2,2,1,2,1},
+                                     {1,2,1,2,2,2,1,1,1,1},
+                                     {1,1,2,1,2,2,2,1,2,1},
+                                     {1,2,2,2,2,2,2,2,2,1},
+                                     {1,2,2,2,2,2,2,2,2,1},
+                                     {1,1,1,2,2,2,2,1,1,1},
+                                     {1,2,1,1,2,2,1,1,2,1},
+                                     {1,2,2,1,1,1,1,2,2,1},
                                      {1,1,1,1,1,1,1,1,1,1},
-                                     {1,0,1,1,0,0,1,1,0,1},
-                                     {1,1,1,0,0,0,0,1,1,1},
-                                     {1,1,1,1,1,1,1,1,1,1}}; 
+                                     {1,2,1,1,2,2,1,1,2,1},
+                                     {1,1,1,2,2,2,2,1,1,1}}; 
   
-private final int[][] moveUp = {{1},
+  private final int[][] moveUp = {{1},
                                 {1},
                                 {1},
                                 {1},
@@ -95,6 +94,19 @@ private final int[][] moveUp = {{1},
                                 {1},
                                 {1},
                                 {1},};
+
+  private final int[][] helloRobot = {{3,2,2,2,1,4,4,1,4,1,1,1,4,1,4,1,4,1,1,1,1,2,2,2,3},
+                                      {3,2,2,2,1,4,4,1,4,1,4,4,4,1,4,1,4,1,4,4,1,2,2,2,3},
+                                      {3,2,2,2,1,1,1,1,4,1,1,1,4,1,4,1,4,1,4,4,1,2,2,2,3},
+                                      {3,2,2,2,1,4,4,1,4,1,4,4,4,1,4,1,4,1,4,4,1,2,2,2,3},
+                                      {3,2,2,2,1,4,4,1,4,1,1,1,4,1,4,1,4,1,1,1,1,2,2,2,3},
+                                      {3,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3},
+                                      {3,1,1,1,1,4,1,1,1,1,4,1,1,1,1,4,1,1,1,1,4,1,1,1,3},
+                                      {3,1,4,4,1,4,1,4,4,1,4,1,4,4,1,4,1,4,4,1,4,4,1,4,3},
+                                      {3,1,1,1,1,4,1,4,4,1,4,1,1,1,4,4,1,4,4,1,4,4,1,4,3},
+                                      {3,1,4,1,4,4,1,4,4,1,4,1,4,4,1,4,1,4,4,1,4,4,1,4,3},
+                                      {3,1,4,4,1,4,1,1,1,1,4,1,1,1,1,4,1,1,1,1,4,4,1,4,3},
+                                      {3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3}};
 
 
   private int _loops = 0;
@@ -197,7 +209,7 @@ private final int[][] moveUp = {{1},
     xTrav.resetEnc();
     //teleopGrid = importCSV(CSV_FILE_PATH);
     //System.out.println(teleopGrid);
-    teleopGrid = paintGrid;
+    teleopGrid = helloRobot;
     state = MainState.INIT;
     currentColor = Color.ORANGE;
     previousColor = currentColor;

@@ -35,7 +35,7 @@ public class Constants {
 
     public static final double k_xP = 7.0;
     public static final double k_xI = 0.0;
-    public static final double k_xD = 2.0;
+    public static final double k_xD = 3.0;
     public static final double k_xF = 0.0; 
     
 // ----Y-Traversal--------------------------------------------------------------
@@ -69,7 +69,7 @@ public class Constants {
         //Speed for painting 
         public static final double k_PaintTriggerSpeed = 1.0;
         //Static times for paint and reset 
-        public static final double k_PaintingTime = 0.6; //In Seconds
+        public static final double k_PaintingTime = 0.3; //In Seconds
         public static final double k_ResetTime = 0.1; //In Seconds
         //Paint Trigger Button
         public static final int k_PaintTriggerBtnPort = 6;
