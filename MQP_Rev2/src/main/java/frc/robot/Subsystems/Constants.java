@@ -21,21 +21,21 @@ public class Constants {
     public static final int k_EncXPort1 = 4;
     public static final int k_EncXPort2 = 5;
     // Encoder conversion factor in inches per pulse
-    public static final float k_EncXConversion = 0.43f;
+    public static final float k_EncXConversion = 0.24488f;
     // Encoder min rate in X direction
     public static final double k_EncXMinRate = 0.125;
     // Encoder is reversed or not
     public static final boolean k_EncXReverse = true;
     // Tolerance
-    public static final double k_ToleranceX = 0.1;
+    public static final double k_ToleranceX = 2000.0;
 
     //PID Constants
     public static final int k_IDX = 0;
     public static final int k_TimeoutMs = 0;
 
-    public static final double k_xP = 7.0;
-    public static final double k_xI = 0.0;
-    public static final double k_xD = 3.0;
+    public static final double k_xP = 3.0;
+    public static final double k_xI = 0.000;
+    public static final double k_xD = 2.50;
     public static final double k_xF = 0.0; 
     
 // ----Y-Traversal--------------------------------------------------------------

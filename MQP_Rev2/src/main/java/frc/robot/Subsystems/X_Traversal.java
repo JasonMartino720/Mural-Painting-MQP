@@ -38,8 +38,8 @@ public class X_Traversal extends SubsystemBase {
   public void configPID(){
     m_X.configNominalOutputForward(0, Constants.k_TimeoutMs);
     m_X.configNominalOutputReverse(0, Constants.k_TimeoutMs);
-    m_X.configPeakOutputForward(0.5, Constants.k_TimeoutMs);
-    m_X.configPeakOutputReverse(-0.5, Constants.k_TimeoutMs);
+    m_X.configPeakOutputForward(0.35, Constants.k_TimeoutMs);
+    m_X.configPeakOutputReverse(-0.35, Constants.k_TimeoutMs);
     
     //m_X.configAllowableClosedloopError(0, Constants.k_IDX, Constants.k_TimeoutMs);
 
@@ -53,7 +53,7 @@ public class X_Traversal extends SubsystemBase {
 
   public void setPositionClosedLoopSetpoint(final double setpoint) {
     m_X.set(ControlMode.Position, 1000 * setpoint);
-    System.out.println(this.getEncPosition());
+    //System.out.println(this.getEncPosition());
   }
 
   public void updatePositionValue(){
@@ -69,8 +69,10 @@ public class X_Traversal extends SubsystemBase {
   }
 
   public int getEncPosition() {
+    System.out.println(this.EncX.getRaw() + "raw");
     return (int) (1000 * this.EncX.getDistance());
     //return (int)(1000 * this.EncX.getRaw() / 8.6);
+    
   }
 
   public boolean atPosition() {

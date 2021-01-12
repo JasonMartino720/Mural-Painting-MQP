@@ -38,7 +38,7 @@ public class Robot extends TimedRobot {
   private enum MainState {
     INIT, IDLE, SET_POSITIONS, WAIT_FOR_ALIGNMENT, UPDATE_BRUSH, PAINT_DELAY, END
   }
-
+  private int button = 0;
   private static MainState state, nextState, postWaitState;
   private static Color previousColor, currentColor;
 
@@ -46,7 +46,7 @@ public class Robot extends TimedRobot {
   private double startTime, delayTime, waitStartTime, waitTime;
   public static int currentPosition[] = new int[2];
   public static int nextPosition[] = new int[2];
-  private boolean moveY, moveL, xAligned, yAligned, readyToPaint;
+  private boolean moveY, moveL, xAligned, yAligned, readyToPaint, pressed;
   private int[][] teleopGrid;
   private final int[][] testGrid = {  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
                                       {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -210,16 +210,16 @@ public class Robot extends TimedRobot {
     //teleopGrid = importCSV(CSV_FILE_PATH);
     //System.out.println(teleopGrid);
     teleopGrid = helloRobot;
-    state = MainState.INIT;
+    Robot.state = MainState.INIT;
     currentColor = Color.ORANGE;
     previousColor = currentColor;
     wallLength = teleopGrid[0].length;
     wallHeight = teleopGrid.length - 1;
     if (wallLength % 2 == 1){
-      wallEnd = wallLength - 1;
+      wallEnd = 0;
     }
     else{
-      wallEnd = 0;
+      wallEnd = wallLength - 1;
     }
   }
 
@@ -243,12 +243,13 @@ public class Robot extends TimedRobot {
      // System.out.println("Current state " + Robot.state + " next state: " + nextState + " ready to paint: " + readyToPaint + " finished painting: " + Brush.finishedPainting);
     xTrav.updatePositionValue();
     brush.update(previousColor, currentColor, readyToPaint);
+    
     //System.out.println("state: " + Robot.state + " next state: " + Robot.nextState);
     switch(Robot.state){
       case INIT:
         System.out.println("INIT");
         moveL = false;
-        moveY = true;
+        moveY = false;
         readyToPaint = true;
         
         nextState = MainState.IDLE;
@@ -263,7 +264,8 @@ public class Robot extends TimedRobot {
           //System.out.println("update brush");
         } 
       break;
-
+      
+      
       case IDLE:
         // if current x is at either end of the wall
         // iterate Y direction 
@@ -321,7 +323,7 @@ public class Robot extends TimedRobot {
         
         startTime = timer.get();
         if(!yTrav.atPosition()){
-          yTrav.setSpeed(-1.0);
+          yTrav.setSpeed(1.0);
         }
         if(currentColor == Color.NONE){
           //System.out.println("color is none");
