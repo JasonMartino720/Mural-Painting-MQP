@@ -53,6 +53,7 @@ public class Constants {
         public static final boolean k_EncYReverse = false;
         //Tolerance
         public static final double k_ToleranceY = 0.1;
+    public static final int k_upSwitchPort = 0;
 
 //----PAINT SELECTOR--------------------------------------------------------------
     //Constant int for Spark Channel
@@ -69,8 +70,8 @@ public class Constants {
         public static final boolean k_EncPaintReverse = false;
         //Tolerance
         public static final double k_TolerancePaint = 0.1;
-        public static final double SELECTOR_CW_SPEED = 0.65;
-        public static final double SELECTOR_CCW_SPEED = -0.65;
+        public static final double SELECTOR_CW_SPEED = 0.6;
+        public static final double SELECTOR_CCW_SPEED = -0.6;
 
     //Constant int for VexMotor Channel
     //  Controls Paint Trigger
@@ -78,14 +79,14 @@ public class Constants {
         //Speed for painting 
         public static final double k_PaintTriggerSpeed = 0.25;
         //Static times for paint and reset 
-        public static final double k_PaintingTime = 0.28; //In Seconds
+        public static final double k_PaintingTime = 0.24; //In Seconds
         public static final double k_ResetTime = 0.1; //In Seconds
         //Paint Trigger Button
         public static final int k_PaintTriggerBtnPort = 6;
 
 //----VEX BUTTON---------------------------------------------------------------------
     //Button DIO Port
-    public static final int k_VexBtnPort = 0;
+    //public static final int k_VexBtnPort = 0;
     
 
     

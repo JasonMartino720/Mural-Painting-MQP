@@ -12,7 +12,7 @@ import javax.lang.model.util.ElementScanner6;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-
+import com.opencsv.*;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -31,13 +31,14 @@ public class Robot extends TimedRobot {
   private final X_Traversal xTrav = new X_Traversal();
   private final Y_Traversal yTrav = new Y_Traversal();
   private final Brush brush = new Brush();
-  private final DigitalInput btn = new DigitalInput(Constants.k_VexBtnPort);
+  //private final DigitalInput btn = new DigitalInput(Constants.k_VexBtnPort);
   private final Timer timer = new Timer();
-  private static final String CSV_FILE_PATH = "src\\main\\java\\frc\\robot\\murals\\small_mural.csv";
+  private static final String CSV_FILE_PATH = "C:\\murals\\helmetSmile.csv";
   //Enums for main state machine
   private enum MainState {
     INIT, IDLE, SET_POSITIONS, WAIT_FOR_ALIGNMENT, UPDATE_BRUSH, PAINT_DELAY, END
   }
+  DigitalInput upSwitch = new DigitalInput(Constants.k_upSwitchPort);
   private int button = 0;
   private static MainState state, nextState, postWaitState;
   private static Color previousColor, currentColor;
@@ -48,6 +49,7 @@ public class Robot extends TimedRobot {
   public static int nextPosition[] = new int[2];
   private boolean moveY, moveL, xAligned, yAligned, readyToPaint, pressed;
   private int[][] teleopGrid;
+  private double ySpeed;
   private final int[][] testGrid = {  {1,2,4,8,5,3,6,1,6,8,7,6,5,4,3,2,1,3,2,4,3,5,4,6},
                                       {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
                                       {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -127,12 +129,34 @@ public class Robot extends TimedRobot {
                                         {4,4,4,4,4,4,4,1,4,6,4,1,4,4,4,4,4,4,4,4,4},
                                         {4,4,4,4,4,4,4,4,1,1,1,4,4,4,4,4,4,4,4,4,4}};
 
-  private final int[][] botRoss = {{2,2,2,2,2,2,2,1,1,1,2,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
-                                   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}};
+  private final int[][] botRoss =  {{3,5,6,2,3,5,6,2,3,5,6,2,3,5,6,2,3,5,6,2,3,5,6,2},
+                                    {5,6,2,3,5,6,2,3,5,6,2,3,5,6,2,3,5,6,2,3,5,6,2,3},
+                                    {6,2,3,5,6,2,3,5,6,2,3,5,6,2,3,5,6,2,3,5,6,2,3,5},
+                                    {2,3,5,6,2,3,5,6,2,3,5,6,2,3,5,6,2,3,5,6,2,3,5,6},
+                                    {3,5,6,2,3,1,1,1,1,5,6,2,3,5,6,1,1,1,1,2,3,5,6,2},
+                                    {5,6,2,3,1,1,1,1,1,1,2,3,5,6,1,1,1,1,1,1,5,6,2,3},
+                                    {6,2,3,5,1,1,1,1,1,1,3,5,6,2,1,1,1,1,1,1,6,2,3,5},
+                                    {2,3,5,6,1,1,1,1,1,1,5,6,2,3,1,1,1,1,1,1,2,3,5,6},
+                                    {3,5,6,2,1,1,1,1,1,1,6,2,3,5,1,1,1,1,1,1,3,5,6,2},
+                                    {5,6,2,3,5,1,1,1,1,6,2,3,5,6,2,1,1,1,1,3,5,6,2,3},
+                                    {6,2,3,5,6,2,3,5,6,2,3,5,6,2,3,5,6,2,3,5,6,2,3,5},
+                                    {2,3,5,6,2,3,5,6,2,3,5,6,2,3,5,6,2,3,5,6,2,3,5,6},
+                                    {3,5,6,2,3,5,6,2,3,5,6,2,3,5,6,2,3,5,6,2,3,5,6,2},
+                                    {5,6,2,3,5,6,2,3,5,6,2,3,5,6,2,3,5,6,2,3,5,6,2,3},
+                                    {6,2,3,1,1,2,3,5,6,2,3,5,6,2,3,5,6,2,3,1,1,2,3,5},
+                                    {2,3,5,1,1,3,5,6,2,3,5,6,2,3,5,6,2,3,5,1,1,3,5,6},
+                                    {3,5,6,1,1,1,1,2,3,5,6,2,3,5,6,2,3,1,1,1,1,5,6,2},
+                                    {5,6,2,1,1,1,1,3,5,6,2,3,5,6,2,3,5,1,1,1,1,6,2,3},
+                                    {6,2,3,5,6,1,1,1,1,1,1,1,1,1,1,1,1,1,1,5,6,2,3,5},
+                                    {2,3,5,6,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,6,2,3,5,6},
+                                    {3,5,6,2,3,5,6,1,1,1,1,1,1,1,1,1,1,5,6,2,3,5,6,2},
+                                    {5,6,2,3,5,6,2,1,1,1,1,1,1,1,1,1,1,6,2,3,5,6,2,3},
+                                    {6,2,3,5,6,2,3,5,6,2,3,5,6,2,3,5,6,2,3,5,6,2,3,5}}; 
+ 
                         
   
   private int _loops = 0;
-
+  
   //Trying to import the file with file reader, read line by line with buffered reader
   public static int[][] importCSV(String file)
   {
@@ -164,7 +188,7 @@ public class Robot extends TimedRobot {
     return returnArray;
   }
 
-  /*public static void readDataLineByLine(String file) 
+  public static void readDataLineByLine(String file) 
     { 
   
         try { 
@@ -196,7 +220,7 @@ public class Robot extends TimedRobot {
         catch (Exception e) { 
             e.printStackTrace(); 
         } 
-    }*/
+    }
 
   @Override
   public void robotInit() {
@@ -230,7 +254,7 @@ public class Robot extends TimedRobot {
     yTrav.resetEnc();
     xTrav.resetEnc();
     //teleopGrid = importCSV(CSV_FILE_PATH);
-    //System.out.println(teleopGrid);
+    //System.out.println("teleopGrid" + teleopGrid);
     teleopGrid = botRoss;
     Robot.state = MainState.INIT;
     currentColor = Color.ORANGE;
@@ -265,15 +289,22 @@ public class Robot extends TimedRobot {
      // System.out.println("Current state " + Robot.state + " next state: " + nextState + " ready to paint: " + readyToPaint + " finished painting: " + Brush.finishedPainting);
     xTrav.updatePositionValue();
     brush.update(previousColor, currentColor, readyToPaint);
+    System.out.println(upSwitch.get());
     //System.out.println("enc" + brush.getEncPosition());
     //System.out.println("state: " + Robot.state + " next state: " + Robot.nextState);
     switch(Robot.state){
       case INIT:
         System.out.println("INIT");
         moveL = false;
-        moveY = true;
         readyToPaint = true;
-        
+        if (upSwitch.get()){
+          moveY = true;
+          ySpeed = -1.0;    
+        }
+        else{
+          moveY = false;
+          ySpeed = 1.0;
+        }
         nextState = MainState.IDLE;
         currentColor = currentColor.set(this.teleopGrid[Robot.nextPosition[1]][Robot.nextPosition[0]]);
         if(currentColor == Color.NONE){
@@ -345,7 +376,7 @@ public class Robot extends TimedRobot {
         
         startTime = timer.get();
         if(!yTrav.atPosition()){
-          yTrav.setSpeed(-1.0);
+          yTrav.setSpeed(ySpeed);
         }
         if(currentColor == Color.NONE){
           //System.out.println("color is none");
