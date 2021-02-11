@@ -8,7 +8,7 @@
 package frc.robot;
 
 import javax.lang.model.util.ElementScanner6;
-
+import java.util.List;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.Subsystems.*;
 import edu.wpi.first.wpilibj.Timer;
+import java.util.ArrayList;
 //import com.opencsv.*; 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -33,7 +34,7 @@ public class Robot extends TimedRobot {
   private final Brush brush = new Brush();
   //private final DigitalInput btn = new DigitalInput(Constants.k_VexBtnPort);
   private final Timer timer = new Timer();
-  private static final String CSV_FILE_PATH = "C:\\murals\\helmetSmile.csv";
+  private static final String CSV_FILE_PATH = "C://murals//helmetSmile.csv";
   //Enums for main state machine
   private enum MainState {
     INIT, IDLE, SET_POSITIONS, WAIT_FOR_ALIGNMENT, UPDATE_BRUSH, PAINT_DELAY, END
@@ -48,7 +49,7 @@ public class Robot extends TimedRobot {
   public static int currentPosition[] = new int[2];
   public static int nextPosition[] = new int[2];
   private boolean moveY, moveL, xAligned, yAligned, readyToPaint, pressed;
-  private int[][] teleopGrid;
+  private String[][] teleopGrid;
   private double ySpeed;
   private final int[][] testGrid = {  {1,2,4,8,5,3,6,1,6,8,7,6,5,4,3,2,1,3,2,4,3,5,4,6},
                                       {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -188,39 +189,44 @@ public class Robot extends TimedRobot {
     return returnArray;
   }
 
-  public static void readDataLineByLine(String file) 
-    { 
-  
-        try { 
-            int i = 0;
-            int[][] data = new int[0][];
-            // Create an object of filereader class 
-            // with CSV file as a parameter. 
-            FileReader filereader = new FileReader(file); 
-  
-            // create csvReader object passing 
-            // filereader as parameter 
-            CSVReader csvReader = new CSVReader(filereader); 
-            int[] nextRecord; 
-  
-            // we are going to read data line by line 
-            while ((nextRecord = csvReader.readNext()) != null) { 
-              ++i;  
+   
+  // Java code to illustrate reading a 
+// CSV file line by line 
+  // Java code to illustrate reading a 
+// all data at once 
+  public  void readAllDataAtOnce(String file) 
+  { 
+    try { 
+      // Create an object of file reader 
+      // class with CSV file as a parameter. 
+      FileReader filereader = new FileReader(file); 
 
-              int[][] newdata = new int[i][];
-              int strar[] = nextRecord.split(",");
-              newdata[i-1] = strar;
-              System.arraycopy(data, 0, newdata, 0, i-1);
-              for (int cell : nextRecord) { 
-                    System.out.print(cell + "\t"); 
-                } 
-                System.out.println(); 
-            } 
+      // create csvReader object and skip first Line 
+      CSVReader csvReader = new CSVReaderBuilder(filereader) 
+                  .withSkipLines(1) 
+                  .build(); 
+      List<String[]> allData = csvReader.readAll(); 
+
+      // print Data 
+      for (String[] row : allData) { 
+        for (String cell : row) { 
+          System.out.print(cell + "\t"); 
         } 
-        catch (Exception e) { 
-            e.printStackTrace(); 
-        } 
-    }
+        System.out.println(); 
+      } 
+      
+      String[][] matrix = allData.toArray(new String[0][0]);
+
+      this.teleopGrid = matrix;
+    } 
+    catch (Exception e) { 
+      e.printStackTrace(); 
+
+    } 
+    
+  } 
+
+
 
   @Override
   public void robotInit() {
@@ -253,14 +259,14 @@ public class Robot extends TimedRobot {
     timer.start();
     yTrav.resetEnc();
     xTrav.resetEnc();
-    //teleopGrid = importCSV(CSV_FILE_PATH);
-    //System.out.println("teleopGrid" + teleopGrid);
-    teleopGrid = botRoss;
+    this.readAllDataAtOnce(CSV_FILE_PATH);
+    System.out.println("teleopGrid" + teleopGrid);
+    //teleopGrid = botRoss;
     Robot.state = MainState.INIT;
     currentColor = Color.ORANGE;
     previousColor = currentColor;
-    wallLength = teleopGrid[0].length;
-    wallHeight = teleopGrid.length - 1;
+    //wallLength = teleopGrid[0].length;
+    //wallHeight = teleopGrid.length - 1;
     if (wallLength % 2 != 1){
       wallEnd = 0;
     }
@@ -306,7 +312,7 @@ public class Robot extends TimedRobot {
           ySpeed = 1.0;
         }
         nextState = MainState.IDLE;
-        currentColor = currentColor.set(this.teleopGrid[Robot.nextPosition[1]][Robot.nextPosition[0]]);
+        //currentColor = currentColor.set(this.teleopGrid[Robot.nextPosition[1]][Robot.nextPosition[0]]);
         if(currentColor == Color.NONE){
           Robot.state = MainState.IDLE;
           //System.out.println("none");
@@ -355,7 +361,7 @@ public class Robot extends TimedRobot {
         }
         System.out.println("nextposition" + "x" + Robot.nextPosition[0] + " y " + Robot.nextPosition[1]);
         previousColor = currentColor;
-        currentColor = currentColor.set(this.teleopGrid[Robot.nextPosition[1]][Robot.nextPosition[0]]);
+        //currentColor = currentColor.set(this.teleopGrid[Robot.nextPosition[1]][Robot.nextPosition[0]]);
         if(currentColor == Color.NONE && moveY){
           Robot.state = MainState.SET_POSITIONS;          
           Robot.currentPosition = Robot.nextPosition;
