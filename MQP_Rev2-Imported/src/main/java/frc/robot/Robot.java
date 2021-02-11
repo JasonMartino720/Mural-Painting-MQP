@@ -12,6 +12,10 @@ import java.util.List;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import com.opencsv.*;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
@@ -34,7 +38,7 @@ public class Robot extends TimedRobot {
   private final Brush brush = new Brush();
   //private final DigitalInput btn = new DigitalInput(Constants.k_VexBtnPort);
   private final Timer timer = new Timer();
-  private static final String CSV_FILE_PATH = "C://murals//helmetSmile.csv";
+  private static final String CSV_FILE_PATH = "small_mural.csv";
   //Enums for main state machine
   private enum MainState {
     INIT, IDLE, SET_POSITIONS, WAIT_FOR_ALIGNMENT, UPDATE_BRUSH, PAINT_DELAY, END
@@ -157,7 +161,22 @@ public class Robot extends TimedRobot {
                         
   
   private int _loops = 0;
-  
+  public static void useOpenCSV(String file) {
+    try{
+      Reader reader = Files.newBufferedReader(Paths.get(file));
+      CSVReader csvReader = new CSVReader(reader);
+     
+      List<String[]> allData = csvReader.readAll();
+      System.out.println("Printing All Data From CSV " + allData);
+    }
+    catch(Exception e){
+      System.out.println("Caught an Error in useOpenCSV");
+     
+      e.printStackTrace();
+    }
+
+  }
+
   //Trying to import the file with file reader, read line by line with buffered reader
   public static int[][] importCSV(String file)
   {
@@ -259,7 +278,7 @@ public class Robot extends TimedRobot {
     timer.start();
     yTrav.resetEnc();
     xTrav.resetEnc();
-    this.readAllDataAtOnce(CSV_FILE_PATH);
+    useOpenCSV(CSV_FILE_PATH);
     System.out.println("teleopGrid" + teleopGrid);
     //teleopGrid = botRoss;
     Robot.state = MainState.INIT;
@@ -295,7 +314,7 @@ public class Robot extends TimedRobot {
      // System.out.println("Current state " + Robot.state + " next state: " + nextState + " ready to paint: " + readyToPaint + " finished painting: " + Brush.finishedPainting);
     xTrav.updatePositionValue();
     brush.update(previousColor, currentColor, readyToPaint);
-    System.out.println(upSwitch.get());
+    //System.out.println(upSwitch.get());
     //System.out.println("enc" + brush.getEncPosition());
     //System.out.println("state: " + Robot.state + " next state: " + Robot.nextState);
     switch(Robot.state){
