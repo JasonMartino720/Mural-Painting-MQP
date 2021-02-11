@@ -14,13 +14,16 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import com.opencsv.*;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.Subsystems.*;
+//import frc.robot.murals.*;
 import edu.wpi.first.wpilibj.Timer;
 import java.util.ArrayList;
 //import com.opencsv.*; 
@@ -38,7 +41,7 @@ public class Robot extends TimedRobot {
   private final Brush brush = new Brush();
   //private final DigitalInput btn = new DigitalInput(Constants.k_VexBtnPort);
   private final Timer timer = new Timer();
-  private static final String CSV_FILE_PATH = "small_mural.csv";
+  private static final String CSV_FILE_PATH = "/home/lvuser/deploy/small_mural.csv";
   //Enums for main state machine
   private enum MainState {
     INIT, IDLE, SET_POSITIONS, WAIT_FOR_ALIGNMENT, UPDATE_BRUSH, PAINT_DELAY, END
@@ -53,7 +56,7 @@ public class Robot extends TimedRobot {
   public static int currentPosition[] = new int[2];
   public static int nextPosition[] = new int[2];
   private boolean moveY, moveL, xAligned, yAligned, readyToPaint, pressed;
-  private String[][] teleopGrid;
+  private int[][] teleopGrid;
   private double ySpeed;
   private final int[][] testGrid = {  {1,2,4,8,5,3,6,1,6,8,7,6,5,4,3,2,1,3,2,4,3,5,4,6},
                                       {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -236,7 +239,7 @@ public class Robot extends TimedRobot {
       
       String[][] matrix = allData.toArray(new String[0][0]);
 
-      this.teleopGrid = matrix;
+     // this.teleopGrid = matrix;
     } 
     catch (Exception e) { 
       e.printStackTrace(); 
@@ -273,19 +276,23 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    System.out.println("deploy" + Filesystem.getDeployDirectory());
     xTrav.updatePositionValue();
     brush.init();
     timer.start();
     yTrav.resetEnc();
     xTrav.resetEnc();
-    useOpenCSV(CSV_FILE_PATH);
+    readAllDataAtOnce(CSV_FILE_PATH);
+    //Path pathToFile = Paths.get("\\small_mural.csv");
+    //System.out.println(pathToFile.toAbsolutePath());
+    
     System.out.println("teleopGrid" + teleopGrid);
-    //teleopGrid = botRoss;
+    teleopGrid = botRoss;
     Robot.state = MainState.INIT;
     currentColor = Color.ORANGE;
     previousColor = currentColor;
-    //wallLength = teleopGrid[0].length;
-    //wallHeight = teleopGrid.length - 1;
+    wallLength = teleopGrid[0].length;
+    wallHeight = teleopGrid.length - 1;
     if (wallLength % 2 != 1){
       wallEnd = 0;
     }
@@ -331,7 +338,7 @@ public class Robot extends TimedRobot {
           ySpeed = 1.0;
         }
         nextState = MainState.IDLE;
-        //currentColor = currentColor.set(this.teleopGrid[Robot.nextPosition[1]][Robot.nextPosition[0]]);
+        currentColor = currentColor.set(this.teleopGrid[Robot.nextPosition[1]][Robot.nextPosition[0]]);
         if(currentColor == Color.NONE){
           Robot.state = MainState.IDLE;
           //System.out.println("none");
@@ -380,7 +387,7 @@ public class Robot extends TimedRobot {
         }
         System.out.println("nextposition" + "x" + Robot.nextPosition[0] + " y " + Robot.nextPosition[1]);
         previousColor = currentColor;
-        //currentColor = currentColor.set(this.teleopGrid[Robot.nextPosition[1]][Robot.nextPosition[0]]);
+        currentColor = currentColor.set(this.teleopGrid[Robot.nextPosition[1]][Robot.nextPosition[0]]);
         if(currentColor == Color.NONE && moveY){
           Robot.state = MainState.SET_POSITIONS;          
           Robot.currentPosition = Robot.nextPosition;
