@@ -29,37 +29,37 @@ public enum Color{
 
     private Color retColor;
 
-    public Color set(int value){
+    public Color set(String value){
         switch(value){
-            case 1:
+            case "ORANGE":
                retColor = Color.ORANGE;
             break;
 
-            case 2:
+            case "BLUE":
                retColor = Color.BLUE;
             break;
 
-            case 3:
+            case "WHITE":
                retColor = Color.WHITE;
             break;
 
-            case 4:
+            case "BLACK":
                retColor = Color.BLACK;
             break;
 
-            case 5:
+            case "RED":
                retColor = Color.RED;
             break;
 
-            case 6:
+            case "YELLOW":
                retColor = Color.YELLOW;
             break;
 
-            case 7:
+            case "WHITE2":
                retColor = Color.WHITE2;
             break;
 
-            case 8:
+            case "PURPLE":
                retColor = Color.PURPLE;
             break;
 

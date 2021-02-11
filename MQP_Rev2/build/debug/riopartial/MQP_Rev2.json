@@ -1,0 +1,9 @@
+[
+  {
+    "artifact": "frcJava (in project MQP_Rev2)",
+    "target": "roborio",
+    "debugfile": "frcJava_roborio.debugconfig",
+    "project": "MQP_Rev2",
+    "language": "java"
+  }
+]

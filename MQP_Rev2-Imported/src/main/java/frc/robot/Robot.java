@@ -56,7 +56,7 @@ public class Robot extends TimedRobot {
   public static int currentPosition[] = new int[2];
   public static int nextPosition[] = new int[2];
   private boolean moveY, moveL, xAligned, yAligned, readyToPaint, pressed;
-  private int[][] teleopGrid;
+  private String[][] teleopGrid;
   private double ySpeed;
   private final int[][] testGrid = {  {1,2,4,8,5,3,6,1,6,8,7,6,5,4,3,2,1,3,2,4,3,5,4,6},
                                       {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -237,9 +237,11 @@ public class Robot extends TimedRobot {
         System.out.println(); 
       } 
       
-      String[][] matrix = allData.toArray(new String[0][0]);
+      String[][] retData = new String[allData.size()][];
+      retData = allData.toArray(retData);
+      System.out.println("Parsed Output " + retData);
 
-     // this.teleopGrid = matrix;
+      this.teleopGrid = retData;
     } 
     catch (Exception e) { 
       e.printStackTrace(); 
@@ -287,7 +289,7 @@ public class Robot extends TimedRobot {
     //System.out.println(pathToFile.toAbsolutePath());
     
     System.out.println("teleopGrid" + teleopGrid);
-    teleopGrid = botRoss;
+    //teleopGrid = botRoss;
     Robot.state = MainState.INIT;
     currentColor = Color.ORANGE;
     previousColor = currentColor;
