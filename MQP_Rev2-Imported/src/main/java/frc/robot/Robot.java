@@ -239,7 +239,14 @@ public class Robot extends TimedRobot {
       
       String[][] retData = new String[allData.size()][];
       retData = allData.toArray(retData);
-      System.out.println("Parsed Output " + retData);
+      
+      //Print Final Data 
+      for (String[] row : retData) { 
+        for (String cell : row) { 
+          System.out.print(cell + "\t"); 
+        } 
+        System.out.println(); 
+      } 
 
       this.teleopGrid = retData;
     } 
