@@ -225,7 +225,7 @@ public class Robot extends TimedRobot {
 
       // create csvReader object and skip first Line 
       CSVReader csvReader = new CSVReaderBuilder(filereader) 
-                  .withSkipLines(1) 
+                  .withSkipLines(0) 
                   .build(); 
       List<String[]> allData = csvReader.readAll(); 
 
@@ -396,6 +396,7 @@ public class Robot extends TimedRobot {
         }
         System.out.println("nextposition" + "x" + Robot.nextPosition[0] + " y " + Robot.nextPosition[1]);
         previousColor = currentColor;
+        System.out.println(this.teleopGrid[Robot.nextPosition[1]][Robot.nextPosition[0]]);
         currentColor = currentColor.set(this.teleopGrid[Robot.nextPosition[1]][Robot.nextPosition[0]]);
         if(currentColor == Color.NONE && moveY){
           Robot.state = MainState.SET_POSITIONS;          
