@@ -12,10 +12,10 @@ package frc.robot.Subsystems;
  */
 public enum Color{
     NONE(0),
-    ORANGE(1), 
+    BLACK(1), 
     BLUE(2), 
-    WHITE(3),
-    BLACK(4), 
+    GREEN(3),
+    WHITE(4), 
     RED(5), 
     YELLOW(6), 
     WHITE2(7), 

@@ -41,7 +41,7 @@ public class Robot extends TimedRobot {
   private final Brush brush = new Brush();
   //private final DigitalInput btn = new DigitalInput(Constants.k_VexBtnPort);
   private final Timer timer = new Timer();
-  private static final String CSV_FILE_PATH = "/home/lvuser/deploy/small_mural.csv";
+  private static final String CSV_FILE_PATH = "/home/lvuser/deploy/pikachu.csv";
   //Enums for main state machine
   private enum MainState {
     INIT, IDLE, SET_POSITIONS, WAIT_FOR_ALIGNMENT, UPDATE_BRUSH, PAINT_DELAY, END
