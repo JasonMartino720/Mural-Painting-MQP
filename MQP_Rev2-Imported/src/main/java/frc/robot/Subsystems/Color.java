@@ -31,14 +31,18 @@ public enum Color{
 
     public Color set(String value){
         switch(value){
-            case "ORANGE":
+            /*case "ORANGE":
                retColor = Color.ORANGE;
-            break;
+            break;*/
 
             case "BLUE":
                retColor = Color.BLUE;
             break;
 
+            case "GREEN":
+               retColor = Color.GREEN;
+            break;
+            
             case "WHITE":
                retColor = Color.WHITE;
             break;
