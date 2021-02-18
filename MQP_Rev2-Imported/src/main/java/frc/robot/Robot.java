@@ -460,6 +460,7 @@ public class Robot extends TimedRobot {
           postWaitState = MainState.UPDATE_BRUSH;
           Robot.currentPosition = Robot.nextPosition;
           waitStartTime = timer.get();
+          System.out.println("Wait Started at time " + timer.get());
           waitTime = 4.0;
           state = MainState.PAINT_DELAY;
         }
@@ -504,9 +505,15 @@ public class Robot extends TimedRobot {
        }
         if(timer.get() - waitStartTime > waitTime)
         {
+          System.out.println("Delay Completed with time " + timer.get());
           state = postWaitState;
           readyToPaint = true;
         }
+        else{
+          System.out.println("Waiting for robot to settle, " + ((waitStartTime + waitTime) - timer.get()) + "remaining");
+          readyToPaint = false;
+        }
+        
       break;
 
       case END:
