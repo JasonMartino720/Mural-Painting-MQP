@@ -38,8 +38,8 @@ public class X_Traversal {
   public void configPID(){
     m_X.configNominalOutputForward(0, Constants.k_TimeoutMs);
     m_X.configNominalOutputReverse(0, Constants.k_TimeoutMs);
-    m_X.configPeakOutputForward(0.35, Constants.k_TimeoutMs);
-    m_X.configPeakOutputReverse(-0.35, Constants.k_TimeoutMs);
+    m_X.configPeakOutputForward(0.45, Constants.k_TimeoutMs);
+    m_X.configPeakOutputReverse(-0.45, Constants.k_TimeoutMs);
     
     //m_X.configAllowableClosedloopError(0, Constants.k_IDX, Constants.k_TimeoutMs);
 
