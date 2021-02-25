@@ -9,6 +9,7 @@ package frc.robot.Subsystems;
 
 import edu.wpi.first.wpilibj.CounterBase;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -18,6 +19,7 @@ import com.ctre.phoenix.motorcontrol.can.*;
 public class X_Traversal {
   public final Encoder EncX = new Encoder(Constants.k_EncXPort1, Constants.k_EncXPort2, Constants.k_EncXReverse, CounterBase.EncodingType.k4X);
   public final TalonSRX m_X = new TalonSRX(Constants.k_XTraversalPort);
+  public final I2C ToF = new I2C(I2C.Port.kOnboard, Constants.k_ToFAddress);
   // private final PIDController PID_X = new PIDController(Constants.k_xP, Constants.k_xI, Constants.k_xD, Constants.k_xF, EncX, m_X);
   /**
    * Creates a new X_Traversal.
@@ -79,6 +81,15 @@ public class X_Traversal {
 
   public boolean atPosition() {
     return m_X.getClosedLoopError() < Constants.k_ToleranceX;
+  }
+
+  public double getAbsPosition() {
+    byte[] buffer = new byte[7];
+    ToF.read(0x01, 7, buffer);
+    System.out.println("Full Buffer" + buffer);
+
+    return buffer[0] << 8 + buffer[1]; 
+
   }
 
 }

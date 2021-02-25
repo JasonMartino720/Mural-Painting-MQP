@@ -29,6 +29,9 @@ public class Constants {
     // Tolerance
     public static final double k_ToleranceX = 2000.0;
 
+    //Tof I2C Address
+    public static final int k_ToFAddress = 0x10;
+
     //PID Constants
     public static final int k_IDX = 0;
     public static final int k_TimeoutMs = 0;
