@@ -90,7 +90,9 @@ public class Constants {
 //----VEX BUTTON---------------------------------------------------------------------
     //Button DIO Port
     //public static final int k_VexBtnPort = 0;
-    
+
+//-----------------------------------------------------------------------------------
+    public static final double k_CMtoIn = 1/2.54;
 
     
 

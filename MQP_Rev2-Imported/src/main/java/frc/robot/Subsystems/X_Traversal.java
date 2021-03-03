@@ -86,11 +86,14 @@ public class X_Traversal {
   public double getAbsPosition() {
     byte[] buffer = new byte[9];
     ToF.read(0x01, 9, buffer);
-    System.out.println("Full Buffer" + buffer);
-    double dist = buffer[2] << 8 + buffer[3];
-    System.out.println("Dist " + dist);
+    System.out.println("Full Buffer " + buffer);
+    double distCM = buffer[2] << 8 + buffer[3];
+    System.out.println("Dist in CM "  + distCM);
 
-    return dist; 
+    double distIn = distCM * Constants.k_CMtoIn;
+    System.out.println("Dist in In " + distIn);
+
+    return distIn; 
 
   }
 
