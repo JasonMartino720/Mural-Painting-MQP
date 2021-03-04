@@ -20,6 +20,7 @@ import java.nio.file.Paths;
 import com.opencsv.*;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.Subsystems.*;
@@ -58,6 +59,8 @@ public class Robot extends TimedRobot {
   private boolean moveY, moveL, xAligned, yAligned, readyToPaint, pressed;
   private String[][] teleopGrid;
   private double ySpeed;
+
+  public static Joystick joy = new Joystick(0);
  
                         
   
@@ -440,11 +443,33 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testInit() {
+    
+    
 
   }
 
   @Override
   public void testPeriodic() {
+
+    //FOR X Movement with Joy
+    if(Math.abs(joy.getRawAxis(0)) > 0.1){
+      xTrav.setSpeed(joy.getRawAxis(0) * 0.4);  
+    }
+    else{
+      xTrav.setSpeed(0);
+    }
+
+    //FOR Y Movement with Joy
+    if(Math.abs(joy.getRawAxis(1)) > 0.1){
+      yTrav.setSpeed(joy.getRawAxis(1));  
+    }
+    else{
+      xTrav.setSpeed(0);
+    }
+
+    
+
+
     
 
   }
