@@ -10,6 +10,7 @@ package frc.robot.Subsystems;
 import edu.wpi.first.wpilibj.CounterBase;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -20,6 +21,7 @@ public class X_Traversal {
   public final Encoder EncX = new Encoder(Constants.k_EncXPort1, Constants.k_EncXPort2, Constants.k_EncXReverse, CounterBase.EncodingType.k4X);
   public final TalonSRX m_X = new TalonSRX(Constants.k_XTraversalPort);
   public final I2C ToF = new I2C(I2C.Port.kOnboard, Constants.k_ToFAddress);
+  public LidarProxy ToFSerial= new LidarProxy(SerialPort.Port.kMXP);
   // private final PIDController PID_X = new PIDController(Constants.k_xP, Constants.k_xI, Constants.k_xD, Constants.k_xF, EncX, m_X);
   /**
    * Creates a new X_Traversal.
@@ -84,10 +86,11 @@ public class X_Traversal {
   }
 
   public double getAbsPosition() {
-    byte[] buffer = new byte[9];
-    ToF.read(0x01, 9, buffer);
-    System.out.println("Full Buffer " + buffer);
-    double distCM = buffer[2] << 8 + buffer[3];
+    // byte[] buffer = new byte[9];
+    // ToF.read(0x01, 9, buffer);
+    // System.out.println("Full Buffer " + buffer);
+    // double distCM = buffer[2] << 8 + buffer[3];
+    double distCM = ToFSerial.get();
     System.out.println("Dist in CM "  + distCM);
 
     double distIn = distCM * Constants.k_CMtoIn;
