@@ -22,16 +22,19 @@ public class X_Traversal {
   public final TalonSRX m_X = new TalonSRX(Constants.k_XTraversalPort);
   public final I2C ToF = new I2C(I2C.Port.kOnboard, Constants.k_ToFAddress);
   public LidarProxy ToFSerial= new LidarProxy(SerialPort.Port.kMXP);
+  double startDist = 0.0;
   // private final PIDController PID_X = new PIDController(Constants.k_xP, Constants.k_xI, Constants.k_xD, Constants.k_xF, EncX, m_X);
   /**
    * Creates a new X_Traversal.
    */
   public X_Traversal() {
+    startDist = this.getAbsPosition();
     m_X.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
     EncX.setDistancePerPulse(Constants.k_EncXConversion);
     // EncX.setMinRate(Constants.k_EncXMinRate);
     EncX.setReverseDirection(Constants.k_EncXReverse);
     this.configPID();
+    
   }
 
   public void init(){
@@ -54,7 +57,7 @@ public class X_Traversal {
 
     m_X.configOpenloopRamp(2.0);
 
-    m_X.setSelectedSensorPosition(this.getEncPosition());
+    m_X.setSelectedSensorPosition(this.getFusedPosition());
   }
 
   public void setPositionClosedLoopSetpoint(final double setpoint) {
@@ -63,7 +66,7 @@ public class X_Traversal {
   }
 
   public void updatePositionValue(){
-    m_X.setSelectedSensorPosition(this.getEncPosition());
+    m_X.setSelectedSensorPosition(this.getFusedPosition());
   }
 
   public void setSpeed(final double speed) {
@@ -85,7 +88,7 @@ public class X_Traversal {
     return m_X.getClosedLoopError() < Constants.k_ToleranceX;
   }
 
-  public double getAbsPosition(double startDist) {
+  public double getAbsPosition() {
     // byte[] buffer = new byte[9];
     // ToF.read(0x01, 9, buffer);
     // System.out.println("Full Buffer " + buffer);
@@ -96,15 +99,15 @@ public class X_Traversal {
     double distIn = distCM * Constants.k_CMtoIn;
     //System.out.println("Dist in In " + distIn);
 
-    return (int) (1000 * (distIn - startDist)); 
+    return (int) (1000 * (distIn - this.startDist)); 
 
   }
 
-  public int getFusedPosition(double startDist){
+  public int getFusedPosition(){
     double absVal = .33;
     double encVal = .66;
-    double fusedPosition = absVal * this.getAbsPosition(startDist) + encVal * this.getEncPosition();
-    System.out.println("Enc position " + this.getEncPosition() + " lidar position " + this.getAbsPosition(startDist) +" fused distance " + fusedPosition);
+    double fusedPosition = absVal * this.getAbsPosition() + encVal * this.getEncPosition();
+    System.out.println("Enc position " + this.getEncPosition() + " lidar position " + this.getAbsPosition() +" fused distance " + fusedPosition);
     return (int) fusedPosition;
     
   }
