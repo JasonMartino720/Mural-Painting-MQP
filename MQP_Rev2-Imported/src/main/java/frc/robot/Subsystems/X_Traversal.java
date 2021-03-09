@@ -85,19 +85,27 @@ public class X_Traversal {
     return m_X.getClosedLoopError() < Constants.k_ToleranceX;
   }
 
-  public double getAbsPosition() {
+  public double getAbsPosition(double startDist) {
     // byte[] buffer = new byte[9];
     // ToF.read(0x01, 9, buffer);
     // System.out.println("Full Buffer " + buffer);
     // double distCM = buffer[2] << 8 + buffer[3];
     double distCM = ToFSerial.get();
-    System.out.println("Dist in CM "  + distCM);
+    //System.out.println("Dist in CM "  + distCM);
 
     double distIn = distCM * Constants.k_CMtoIn;
-    System.out.println("Dist in In " + distIn);
+    //System.out.println("Dist in In " + distIn);
 
-    return distIn; 
+    return (int) (1000 * (distIn - startDist)); 
 
   }
 
+  public int getFusedPosition(double startDist){
+    double absVal = .33;
+    double encVal = .66;
+    double fusedPosition = absVal * this.getAbsPosition(startDist) + encVal * this.getEncPosition();
+    System.out.println("Enc position " + this.getEncPosition() + " lidar position " + this.getAbsPosition(startDist) +" fused distance " + fusedPosition);
+    return (int) fusedPosition;
+    
+  }
 }

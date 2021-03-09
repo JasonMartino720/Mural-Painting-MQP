@@ -59,7 +59,7 @@ public class Robot extends TimedRobot {
   private boolean moveY, moveL, xAligned, yAligned, readyToPaint, pressed;
   private String[][] teleopGrid;
   private double ySpeed;
-
+  private int xCount = 0;
   public static Joystick joy = new Joystick(0);
  
                         
@@ -443,14 +443,19 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testInit() {
-    
-    
+    timer.start();
+    startTime = timer.get();
 
   }
 
   @Override
   public void testPeriodic() {
-
+    boolean oneButton = false;
+    boolean twoButton = false;
+    if (timer.get() > startTime + 1){
+      startTime = timer.get();
+      xTrav.getAbsPosition();
+    }
     //FOR X Movement with Joy
     if(Math.abs(joy.getRawAxis(0)) > 0.1){
       xTrav.setSpeed(joy.getRawAxis(0) * 0.4);  
@@ -458,13 +463,30 @@ public class Robot extends TimedRobot {
     else{
       xTrav.setSpeed(0);
     }
-
+    if(joy.getRawButton(1) && !oneButton){
+      oneButton = true;
+      System.out.println("xcount" + xCount);
+      xCount++;
+      xTrav.setPositionClosedLoopSetpoint(xCount * 1.5);
+    }
+    if(joy.getRawButton(2) && !twoButton){
+      twoButton = true;  
+      System.out.println("xcount" + xCount);
+      xCount--;
+      xTrav.setPositionClosedLoopSetpoint(xCount * -1.5);
+    }
+    if(!joy.getRawButton(1)){
+      oneButton = false;
+    }
+    if(!joy.getRawButton(2)){
+      twoButton = false;
+    }
     //FOR Y Movement with Joy
     if(Math.abs(joy.getRawAxis(1)) > 0.1){
       yTrav.setSpeed(joy.getRawAxis(1));  
     }
     else{
-      xTrav.setSpeed(0);
+      yTrav.setSpeed(0);
     }
 
     
