@@ -76,24 +76,32 @@ public class Brush extends SubsystemBase {
     return !paintTriggerBtn.get();
   }
 
+  //Run Paint Sprayer
   public void paintForTime() {
     m_paintTrigger.set(Constants.k_PaintTriggerSpeed);
   }
 
+  //Retract Paint Actuator by runnning in reverse
   public void triggerReset() {
     m_paintTrigger.set(-Constants.k_PaintTriggerSpeed);
   }
+
+  //Turn off paint actuator
   public void stopPainting() {
     m_paintTrigger.set(0.0);
   }
 
+  //Returns encoder value
   public double getEncPosition(){
     return this.EncPaint.getDistance();
   }
 
+  //Resets Encoder to 0
   public void resetEnc(){
     EncPaint.reset();
   }
+
+  //Return true if robot position error is within tolerance
   public boolean atPosition(int position){
     if(Math.abs(position - getEncPosition()) < Constants.k_TolerancePaint){
       return true;
@@ -103,10 +111,13 @@ public class Brush extends SubsystemBase {
     }
   }
 
+  //State Machine, must be updated constantly in robot.java
   public void update(Color previousColor, Color color, boolean readyToPaint) {
     //System.out.println("previous color" + previousColor + "current color: " + color);
     switch (this.brushState) {
     
+    //Init Case to be run once
+    //Starts timer and initializes color and switch
     case INIT:
       brushTimer.start();
       if(this.currentColor != color.colorVal){
@@ -116,7 +127,9 @@ public class Brush extends SubsystemBase {
       brushState = BrushState.IDLE;
       this.lastSwitchState = true;
     break;
-  
+
+    //IDLE Case. Used to guide state machine based on input form main loop in robot.java
+    //Handles loop flow based on desired/actual color and readiness to paint a dot
     case IDLE:
 
       if(Brush.finishedPainting){
@@ -234,6 +247,7 @@ public class Brush extends SubsystemBase {
       }
     break;
 
+    //Waits for the paint sprayer to retract before moving back to IDLE
     case WAIT_FOR_RESET:
       //System.out.println("WAITING FOR RESET TO FINISH");
       //System.out.println(getTriggerBtn());
@@ -246,6 +260,7 @@ public class Brush extends SubsystemBase {
       }
     break;
 
+    //Generic Wait for Time using 3rd var nextBrushState
     case WAIT_FOR_TIME:
       if(brushTimer.get() - waitStartTime > waitTime)
       {

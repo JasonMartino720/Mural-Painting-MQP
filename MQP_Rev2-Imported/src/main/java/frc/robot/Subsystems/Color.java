@@ -8,7 +8,7 @@
 package frc.robot.Subsystems;
 
 /**
- * Add your docs here.
+ * Color class for relating color to a spot on the paint switching mechanism
  */
 public enum Color{
     NONE(0),

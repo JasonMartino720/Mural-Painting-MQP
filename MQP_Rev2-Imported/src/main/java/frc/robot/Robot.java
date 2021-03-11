@@ -61,6 +61,7 @@ public class Robot extends TimedRobot {
   private double ySpeed;
 
   public static Joystick joy = new Joystick(0);
+
  
                         
   
@@ -235,6 +236,8 @@ public class Robot extends TimedRobot {
     //System.out.println("enc" + brush.getEncPosition());
     //System.out.println("state: " + Robot.state + " next state: " + Robot.nextState);
     switch(Robot.state){
+
+      //Init case for setting robot/mural configuration
       case INIT:
         System.out.println("INIT");
         moveL = false;
@@ -260,7 +263,8 @@ public class Robot extends TimedRobot {
         } 
       break;
       
-      
+      //Idle Case, returns here after every paint. Handles when the robot reaches the end of the mural.
+      //Check mural for necessary color
       case IDLE:
         // if current x is at either end of the wall
         // iterate Y direction 
@@ -312,6 +316,7 @@ public class Robot extends TimedRobot {
         }
       break;
 
+      //Set next position for robot and start timer
       case SET_POSITIONS:
         //System.out.println("SET_POSITIONS");
         
@@ -334,6 +339,7 @@ public class Robot extends TimedRobot {
         
       break;
 
+      //Waits until total alignment to start timeout for allowing robot to settle
       case WAIT_FOR_ALIGNMENT:
        if (++_loops >= 0) {
          _loops = 0;
@@ -356,6 +362,7 @@ public class Robot extends TimedRobot {
           xAligned = false;
         }
 
+        //Done when fully aligned and there is an active color
         if(yAligned && xAligned && currentColor != Color.NONE){
           nextState = MainState.IDLE;
           System.out.println("i don't know why its here 1");
@@ -383,6 +390,7 @@ public class Robot extends TimedRobot {
         
       break;
 
+      //Runs the update cycle on the brush so paint changer is up to date and painting happens when ready
       case UPDATE_BRUSH:
         //System.out.println("UPDATE_BRUSH");
          if (++_loops >= 0) {
@@ -400,6 +408,7 @@ public class Robot extends TimedRobot {
         
       break;
 
+      //Delay while roobt paints and resets painting mechanism
       case PAINT_DELAY:
        if (++_loops >= 10) {
          _loops = 0;
@@ -418,6 +427,7 @@ public class Robot extends TimedRobot {
         
       break;
 
+      //End Case - Never Leaves
       case END:
          if (++_loops >= 10) {
            _loops = 0;
@@ -466,11 +476,6 @@ public class Robot extends TimedRobot {
     else{
       xTrav.setSpeed(0);
     }
-
-    
-
-
-    
 
   }
 
