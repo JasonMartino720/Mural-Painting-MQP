@@ -22,16 +22,19 @@ public class X_Traversal {
   public final TalonSRX m_X = new TalonSRX(Constants.k_XTraversalPort);
   public final I2C ToF = new I2C(I2C.Port.kOnboard, Constants.k_ToFAddress);
   public LidarProxy ToFSerial= new LidarProxy(SerialPort.Port.kMXP);
+  double startDist = 0.0;
   // private final PIDController PID_X = new PIDController(Constants.k_xP, Constants.k_xI, Constants.k_xD, Constants.k_xF, EncX, m_X);
   /**
    * Creates a new X_Traversal with necessary motor and encoder configuration
    */
   public X_Traversal() {
+    startDist = this.getAbsPosition();
     m_X.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
     EncX.setDistancePerPulse(Constants.k_EncXConversion);
     // EncX.setMinRate(Constants.k_EncXMinRate);
     EncX.setReverseDirection(Constants.k_EncXReverse);
     this.configPID();
+    
   }
   
   public void init(){
@@ -55,7 +58,7 @@ public class X_Traversal {
 
     m_X.configOpenloopRamp(2.0);
 
-    m_X.setSelectedSensorPosition(this.getEncPosition());
+    m_X.setSelectedSensorPosition(this.getFusedPosition());
   }
 
   //Begins Closed Loop Control
@@ -66,7 +69,7 @@ public class X_Traversal {
 
   //Updates the sensor value to the value of the X encoder
   public void updatePositionValue(){
-    m_X.setSelectedSensorPosition(this.getEncPosition());
+    m_X.setSelectedSensorPosition(this.getFusedPosition());
   }
 
   //Open Loop Set Speed
@@ -99,13 +102,21 @@ public class X_Traversal {
     // System.out.println("Full Buffer " + buffer);
     // double distCM = buffer[2] << 8 + buffer[3];
     double distCM = ToFSerial.get();
-    System.out.println("Dist in CM "  + distCM);
+    //System.out.println("Dist in CM "  + distCM);
 
     double distIn = distCM * Constants.k_CMtoIn;
-    System.out.println("Dist in In " + distIn);
+    //System.out.println("Dist in In " + distIn);
 
-    return distIn; 
+    return (int) (1000 * (distIn - this.startDist)); 
 
   }
-  
+
+  public int getFusedPosition(){
+    double absVal = .33;
+    double encVal = .66;
+    double fusedPosition = absVal * this.getAbsPosition() + encVal * this.getEncPosition();
+    System.out.println("Enc position " + this.getEncPosition() + " lidar position " + this.getAbsPosition() +" fused distance " + fusedPosition);
+    return (int) fusedPosition;
+    
+  }
 }

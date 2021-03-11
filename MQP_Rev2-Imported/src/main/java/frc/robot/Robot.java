@@ -42,7 +42,7 @@ public class Robot extends TimedRobot {
   private final Brush brush = new Brush();
   //private final DigitalInput btn = new DigitalInput(Constants.k_VexBtnPort);
   private final Timer timer = new Timer();
-  private static final String CSV_FILE_PATH = "/home/lvuser/deploy/pikachu.csv";
+  private static final String CSV_FILE_PATH = "/home/lvuser/deploy/squirtle.csv";
   //Enums for main state machine
   private enum MainState {
     INIT, IDLE, SET_POSITIONS, WAIT_FOR_ALIGNMENT, UPDATE_BRUSH, PAINT_DELAY, END
@@ -59,10 +59,9 @@ public class Robot extends TimedRobot {
   private boolean moveY, moveL, xAligned, yAligned, readyToPaint, pressed;
   private String[][] teleopGrid;
   private double ySpeed;
-
+  private int xCount = 0;
   public static Joystick joy = new Joystick(0);
-
- 
+  private double lidarStart;
                         
   
   private int _loops = 0;
@@ -290,11 +289,11 @@ public class Robot extends TimedRobot {
         // iterate X direction 
         else{
           if(!moveL){
-            Robot.nextPosition[0] = Robot.currentPosition[0] + 1;
+            Robot.nextPosition[0] = Robot.currentPosition[0] - 1;
             //System.out.println("next position" + Robot.nextPosition);
           }
           else{
-            Robot.nextPosition[0] = Robot.currentPosition[0] - 1;
+            Robot.nextPosition[0] = Robot.currentPosition[0] + 1;
             //System.out.println("next position" + Robot.nextPosition);
           }
           moveY = false;
@@ -453,14 +452,19 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testInit() {
-    
-    
-
+    timer.start();
+    startTime = timer.get();
+    xTrav.resetEnc();
   }
 
   @Override
   public void testPeriodic() {
-
+    boolean oneButton = false;
+    boolean twoButton = false;
+    if (timer.get() > startTime + 1){
+      startTime = timer.get();
+      xTrav.getFusedPosition();
+    }
     //FOR X Movement with Joy
     if(Math.abs(joy.getRawAxis(0)) > 0.1){
       xTrav.setSpeed(joy.getRawAxis(0) * 0.4);  
@@ -468,13 +472,30 @@ public class Robot extends TimedRobot {
     else{
       xTrav.setSpeed(0);
     }
-
+    if(joy.getRawButton(1) && !oneButton){
+      oneButton = true;
+      System.out.println("xcount" + xCount);
+      xCount++;
+      xTrav.setPositionClosedLoopSetpoint(xCount * 1.5);
+    }
+    if(joy.getRawButton(2) && !twoButton){
+      twoButton = true;  
+      System.out.println("xcount" + xCount);
+      xCount--;
+      xTrav.setPositionClosedLoopSetpoint(xCount * -1.5);
+    }
+    if(!joy.getRawButton(1)){
+      oneButton = false;
+    }
+    if(!joy.getRawButton(2)){
+      twoButton = false;
+    }
     //FOR Y Movement with Joy
     if(Math.abs(joy.getRawAxis(1)) > 0.1){
       yTrav.setSpeed(joy.getRawAxis(1));  
     }
     else{
-      xTrav.setSpeed(0);
+      yTrav.setSpeed(0);
     }
 
   }
