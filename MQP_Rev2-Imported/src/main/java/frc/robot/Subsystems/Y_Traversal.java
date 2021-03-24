@@ -32,19 +32,23 @@ public class Y_Traversal extends SubsystemBase {
   public void init(){
     //Any initialization that may need to be repeated, ie. should not be called in constructor
   }
-  
+
+  //Begins Closed Loop Control
   public void setPositionClosedLoopSetpoint(double setpoint){
     m_Y.set(ControlMode.Position, setpoint);
   }
 
+  //Open Loop Set Speed
   public void setSpeed(double speed){
     m_Y.set(ControlMode.PercentOutput, speed);
   }
 
+  //Return encoder distance
   public double getEncPosition() {
     return this.EncY.getDistance();
   }
 
+  //Resets Encoder to Zero
   public void resetEnc(){
     EncY.reset();
   }
@@ -57,6 +61,7 @@ public class Y_Traversal extends SubsystemBase {
     return retVal  < Constants.k_ToleranceY;
   }
 
+  //Deprecated
   public double getToFPosition(){
     return Y_ToF.get();
   }

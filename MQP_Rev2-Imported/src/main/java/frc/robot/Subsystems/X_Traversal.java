@@ -25,7 +25,7 @@ public class X_Traversal {
   double startDist = 0.0;
   // private final PIDController PID_X = new PIDController(Constants.k_xP, Constants.k_xI, Constants.k_xD, Constants.k_xF, EncX, m_X);
   /**
-   * Creates a new X_Traversal.
+   * Creates a new X_Traversal with necessary motor and encoder configuration
    */
   public X_Traversal() {
     startDist = this.getAbsPosition();
@@ -36,12 +36,13 @@ public class X_Traversal {
     this.configPID();
     System.out.println("start pos" + startDist);
   }
-
+  
   public void init(){
     //Any initialization that may need to be repeated, ie. should not be called in constructor
     
   }
 
+  //Configures PID constants
   public void configPID(){
     m_X.configNominalOutputForward(0, Constants.k_TimeoutMs);
     m_X.configNominalOutputReverse(0, Constants.k_TimeoutMs);
@@ -60,23 +61,28 @@ public class X_Traversal {
     m_X.setSelectedSensorPosition(this.getFusedPosition());
   }
 
+  //Begins Closed Loop Control
   public void setPositionClosedLoopSetpoint(final double setpoint) {
     m_X.set(ControlMode.Position, 1000 * setpoint);
     //System.out.println(this.getEncPosition());
   }
 
+  //Updates the sensor value to the value of the X encoder
   public void updatePositionValue(){
     m_X.setSelectedSensorPosition(this.getFusedPosition());
   }
 
+  //Open Loop Set Speed
   public void setSpeed(final double speed) {
     m_X.set(ControlMode.PercentOutput, speed); 
   }
 
+  //Set Enc to 0
   public void resetEnc(){
     EncX.reset();
   }
 
+  //Returns encoder position in inches * 1000
   public int getEncPosition() {
     //System.out.println(this.EncX.getRaw() + "raw");
     return (int) (1000 * this.EncX.getDistance());
@@ -84,6 +90,7 @@ public class X_Traversal {
     
   }
 
+  //Returns true if position error is less than tolerance
   public boolean atPosition() {
     return m_X.getClosedLoopError() < Constants.k_ToleranceX;
   }
