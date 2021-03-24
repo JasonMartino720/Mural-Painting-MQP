@@ -42,7 +42,7 @@ public class Robot extends TimedRobot {
   private final Brush brush = new Brush();
   //private final DigitalInput btn = new DigitalInput(Constants.k_VexBtnPort);
   private final Timer timer = new Timer();
-  private static final String CSV_FILE_PATH = "/home/lvuser/deploy/squirtle.csv";
+  private static final String CSV_FILE_PATH = "/home/lvuser/deploy/logo.csv";
   //Enums for main state machine
   private enum MainState {
     INIT, IDLE, SET_POSITIONS, WAIT_FOR_ALIGNMENT, UPDATE_BRUSH, PAINT_DELAY, END
@@ -133,9 +133,9 @@ public class Robot extends TimedRobot {
       // print Data 
       for (String[] row : allData) { 
         for (String cell : row) { 
-          System.out.print(cell + "\t"); 
+          //System.out.print(cell + "\t"); 
         } 
-        System.out.println(); 
+        //System.out.println(); 
       } 
       
       String[][] retData = new String[allData.size()][];
@@ -144,9 +144,9 @@ public class Robot extends TimedRobot {
       //Print Final Data 
       for (String[] row : retData) { 
         for (String cell : row) { 
-          System.out.print(cell + "\t"); 
+          //System.out.print(cell + "\t"); 
         } 
-        System.out.println(); 
+        //System.out.println(); 
       } 
 
       this.teleopGrid = retData;
@@ -192,11 +192,12 @@ public class Robot extends TimedRobot {
     timer.start();
     yTrav.resetEnc();
     xTrav.resetEnc();
+    xTrav.getStartPosition();
     readAllDataAtOnce(CSV_FILE_PATH);
     //Path pathToFile = Paths.get("\\small_mural.csv");
     //System.out.println(pathToFile.toAbsolutePath());
     
-    System.out.println("teleopGrid" + teleopGrid);
+    //System.out.println("teleopGrid" + teleopGrid);
     //teleopGrid = botRoss;
     Robot.state = MainState.INIT;
     currentColor = Color.BLACK;
@@ -249,6 +250,7 @@ public class Robot extends TimedRobot {
         }
         nextState = MainState.IDLE;
         currentColor = currentColor.set(this.teleopGrid[Robot.nextPosition[1]][Robot.nextPosition[0]]);
+        System.out.println(currentColor);
         if(currentColor == Color.NONE){
           Robot.state = MainState.IDLE;
           //System.out.println("none");
@@ -286,11 +288,11 @@ public class Robot extends TimedRobot {
         // iterate X direction 
         else{
           if(!moveL){
-            Robot.nextPosition[0] = Robot.currentPosition[0] - 1;
+            Robot.nextPosition[0] = Robot.currentPosition[0] + 1;
             //System.out.println("next position" + Robot.nextPosition);
           }
           else{
-            Robot.nextPosition[0] = Robot.currentPosition[0] + 1;
+            Robot.nextPosition[0] = Robot.currentPosition[0] - 1;
             //System.out.println("next position" + Robot.nextPosition);
           }
           moveY = false;
@@ -304,6 +306,7 @@ public class Robot extends TimedRobot {
           Robot.currentPosition = Robot.nextPosition;
         }
         else if(currentColor == Color.NONE){
+          System.out.println("none");
           Robot.state = MainState.IDLE;
           Robot.currentPosition = Robot.nextPosition;
         } 
@@ -412,7 +415,7 @@ public class Robot extends TimedRobot {
           readyToPaint = true;
         }
         else{
-          System.out.println("Waiting for robot to settle, " + ((waitStartTime + waitTime) - timer.get()) + "remaining");
+          //System.out.println("Waiting for robot to settle, " + ((waitStartTime + waitTime) - timer.get()) + "remaining");
           readyToPaint = false;
         }
         
@@ -446,6 +449,7 @@ public class Robot extends TimedRobot {
     timer.start();
     startTime = timer.get();
     xTrav.resetEnc();
+    xTrav.getStartPosition();
   }
 
   @Override
@@ -458,7 +462,7 @@ public class Robot extends TimedRobot {
     }
     //FOR X Movement with Joy
     if(Math.abs(joy.getRawAxis(0)) > 0.1){
-      xTrav.setSpeed(joy.getRawAxis(0) * 0.4);  
+      xTrav.setSpeed(joy.getRawAxis(0) * 0.75);  
     }
     else{
       xTrav.setSpeed(0);

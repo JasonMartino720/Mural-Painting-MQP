@@ -34,19 +34,19 @@ public class X_Traversal {
     // EncX.setMinRate(Constants.k_EncXMinRate);
     EncX.setReverseDirection(Constants.k_EncXReverse);
     this.configPID();
-    
+    System.out.println("start pos" + startDist);
   }
 
   public void init(){
     //Any initialization that may need to be repeated, ie. should not be called in constructor
-
+    
   }
 
   public void configPID(){
     m_X.configNominalOutputForward(0, Constants.k_TimeoutMs);
     m_X.configNominalOutputReverse(0, Constants.k_TimeoutMs);
-    m_X.configPeakOutputForward(0.45, Constants.k_TimeoutMs);
-    m_X.configPeakOutputReverse(-0.45, Constants.k_TimeoutMs);
+    m_X.configPeakOutputForward(0.35, Constants.k_TimeoutMs);
+    m_X.configPeakOutputReverse(-0.35, Constants.k_TimeoutMs);
     
     //m_X.configAllowableClosedloopError(0, Constants.k_IDX, Constants.k_TimeoutMs);
 
@@ -88,27 +88,41 @@ public class X_Traversal {
     return m_X.getClosedLoopError() < Constants.k_ToleranceX;
   }
 
+  public void getStartPosition(){
+    startDist = ToFSerial.get();
+    System.out.println("start pos" + startDist);
+    
+  }
   public double getAbsPosition() {
     // byte[] buffer = new byte[9];
     // ToF.read(0x01, 9, buffer);
     // System.out.println("Full Buffer " + buffer);
     // double distCM = buffer[2] << 8 + buffer[3];
-    double distCM = ToFSerial.get();
+    //System.out.println("lidar get" + ToFSerial.get());
+    double distCM = ToFSerial.get() - startDist;
     //System.out.println("Dist in CM "  + distCM);
 
     double distIn = distCM * Constants.k_CMtoIn;
     //System.out.println("Dist in In " + distIn);
 
-    return (int) (1000 * (distIn - this.startDist)); 
+    return (int) (1000 * distIn); 
 
   }
 
   public int getFusedPosition(){
-    double absVal = .33;
-    double encVal = .66;
+    double absVal = .45;
+    double encVal = .55;
     double fusedPosition = absVal * this.getAbsPosition() + encVal * this.getEncPosition();
-    System.out.println("Enc position " + this.getEncPosition() + " lidar position " + this.getAbsPosition() +" fused distance " + fusedPosition);
-    return (int) fusedPosition;
+    //System.out.println("Enc position " + this.getEncPosition() + " lidar position " + this.getAbsPosition()+" lidar raw " + ToFSerial.get() +" fused distance " + fusedPosition);
+    if(this.getAbsPosition() > 0){
+      return (int) fusedPosition;
+    }
+    else{
+      System.out.println("just encoder");
+      return (int) this.getEncPosition();
+    }
+    
+    //
     
   }
 }

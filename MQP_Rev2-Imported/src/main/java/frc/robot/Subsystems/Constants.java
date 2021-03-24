@@ -21,7 +21,7 @@ public class Constants {
     public static final int k_EncXPort1 = 4;
     public static final int k_EncXPort2 = 5;
     // Encoder conversion factor in inches per pulse
-    public static final float k_EncXConversion = 0.24488f;
+    public static final float k_EncXConversion = 0.23f;
     // Encoder min rate in X direction
     public static final double k_EncXMinRate = 0.125;
     // Encoder is reversed or not
@@ -36,9 +36,9 @@ public class Constants {
     public static final int k_IDX = 0;
     public static final int k_TimeoutMs = 0;
 
-    public static final double k_xP = 3.0;
+    public static final double k_xP = 1.00;
     public static final double k_xI = 0.000;
-    public static final double k_xD = 2.50;
+    public static final double k_xD = 0.0;
     public static final double k_xF = 0.0; 
     
 // ----Y-Traversal--------------------------------------------------------------
@@ -66,15 +66,15 @@ public class Constants {
         public static final int k_PaintSelectorPort = 1;
         //Speeds for single turn method
         //Encoder conversion factor in inches per pulse
-        public static final float k_EncPaintConversion = 0.125f; 
+        public static final float k_EncPaintConversion = .125f; 
         //Encoder min rate in X direction
         public static final double k_EncPaintMinRate = 0.125; 
         //Encoder is reversed or not
         public static final boolean k_EncPaintReverse = false;
         //Tolerance
         public static final double k_TolerancePaint = 0.1;
-        public static final double SELECTOR_CW_SPEED = 0.6;
-        public static final double SELECTOR_CCW_SPEED = -0.6;
+        public static final double SELECTOR_CW_SPEED = 0.5;
+        public static final double SELECTOR_CCW_SPEED = -0.5;
 
     //Constant int for VexMotor Channel
     //  Controls Paint Trigger

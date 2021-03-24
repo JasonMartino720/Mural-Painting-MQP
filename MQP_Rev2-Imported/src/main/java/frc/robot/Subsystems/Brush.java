@@ -159,6 +159,7 @@ public class Brush extends SubsystemBase {
     case SELECTING_COLOR:
       //Optimization to decide whether to turn right or left, pretty cool how simple it is
       //System.out.println("current color: " + this.currentColor + " desired color: " + color.colorVal);
+
       if(this.currentColor <= 4){
         if(color.colorVal <= (this.currentColor + 4) && color.colorVal > this.currentColor){
           this.spinSelectorCCW();
@@ -193,6 +194,7 @@ public class Brush extends SubsystemBase {
     //Waits for Paint Selector to reach desired color
     case WAIT_FOR_COLOR:
       // System.out.println("current color wait for color" + this.currentColor);
+      System.out.println("encoder position" + this.getEncPosition());
       if(Math.abs(this.getEncPosition()) > 0.975 && Math.abs(this.getEncPosition()) < 1.025){
         this.resetEnc();
         //Positive

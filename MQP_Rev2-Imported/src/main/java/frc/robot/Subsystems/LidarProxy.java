@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SerialPort;
 
 public class LidarProxy {
-    private double lastReadDistance;
+    private double lastReadDistance, lowReadDistance, highReadDistance;
     private LidarListener _listener;
     private Thread _thread;
     private boolean _initializedProperly;
@@ -54,7 +54,11 @@ public class LidarProxy {
                     byte[] read = _port.read(9);
                     //SmartDashboard.putNumber("Lidar/readLength", read.length);
                     //SmartDashboard.putNumber("Lidar/bytes/3", new Integer(read[2] & 0xFF));
-                    _proxy.lastReadDistance = read[2] & 0xFF;
+                    _proxy.lowReadDistance = read[2] & 0xFF;
+                    _proxy.highReadDistance = read[3] << 8 & 0xFFFF;
+                    _proxy.lastReadDistance = _proxy.lowReadDistance + _proxy.highReadDistance;
+                    //System.out.println("low" + _proxy.lowReadDistance + "high" + _proxy.highReadDistance);
+                    //System.out.println("combined" + _proxy.lastReadDistance);
                 } catch (Exception e) {
                     // DriverStation.reportError("LidarListener exception: " + e.toString(), false);
                 }

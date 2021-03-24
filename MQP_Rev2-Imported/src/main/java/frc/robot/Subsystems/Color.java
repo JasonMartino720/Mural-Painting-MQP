@@ -13,13 +13,13 @@ package frc.robot.Subsystems;
 public enum Color{
     NONE(0),
     BLACK(1), 
-    BLUE(2), 
+    BLUE(6), 
     GREEN(3),
     WHITE(4), 
     RED(5), 
-    YELLOW(6), 
-    WHITE2(7), 
-    PURPLE(8);
+    PURPLE(2), 
+    YELLOW(7), 
+    BROWN(8);
 
     protected final int colorVal;
 
@@ -31,9 +31,9 @@ public enum Color{
 
     public Color set(String value){
         switch(value){
-            /*case "ORANGE":
-               retColor = Color.ORANGE;
-            break;*/
+            case "PURPLE":
+               retColor = Color.PURPLE;
+            break;
 
             case "BLUE":
                retColor = Color.BLUE;
@@ -59,12 +59,8 @@ public enum Color{
                retColor = Color.YELLOW;
             break;
 
-            case "WHITE2":
-               retColor = Color.WHITE2;
-            break;
-
-            case "PURPLE":
-               retColor = Color.PURPLE;
+            case "BROWN":
+               retColor = Color.BROWN;
             break;
 
             default:
